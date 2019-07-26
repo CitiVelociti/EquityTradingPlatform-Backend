@@ -4,54 +4,45 @@ import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Enums.StrategyType;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
-public class Strategy implements StrategyInterface{
+public class Strategy implements IStrategy {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="id")
-    private Integer id;
-    private StrategyType strategy_type;
+    private int id;
+    private StrategyType strategyType;
     private Status status;
     private String ticker;
-    private Double volume;
-    private Double limit;
-    private Double stop;
-    private Position current_position;
+    private double volume;
+    private double limit;
+    private double stop;
+    private Position currentPosition;
 
-    public Strategy(String ticker, Double volume, Double limit, Double stop)
-    {
-        current_position = Position.CLOSED;
-        status = Status.ACTIVE;
+    public Strategy(String ticker, double volume, double limit, double stop) {
+        this.currentPosition = Position.CLOSED;
+        this.status = Status.ACTIVE;
         this.ticker = ticker;
         this.volume = volume;
         this.limit = limit;
         this.stop = stop;
-
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public StrategyType getStrategy_type() {
-        return strategy_type;
+    public StrategyType getStrategyType() {
+        return this.strategyType;
     }
 
-    public void setStrategy_type(StrategyType strategy_type) {
-        this.strategy_type = strategy_type;
+    public void setStrategyType(StrategyType strategyType) {
+        this.strategyType = strategyType;
     }
 
     public Status getStatus() {
-        return status;
+        return this.status;
     }
 
     public void setStatus(Status status) {
@@ -59,7 +50,7 @@ public class Strategy implements StrategyInterface{
     }
 
     public String getTicker() {
-        return ticker;
+        return this.ticker;
     }
 
     public void setTicker(String ticker) {
@@ -67,7 +58,7 @@ public class Strategy implements StrategyInterface{
     }
 
     public double getVolume() {
-        return volume;
+        return this.volume;
     }
 
     public void setVolume(double volume) {
@@ -75,7 +66,7 @@ public class Strategy implements StrategyInterface{
     }
 
     public double getLimit() {
-        return limit;
+        return this.limit;
     }
 
     public void setLimit(double limit) {
@@ -83,18 +74,18 @@ public class Strategy implements StrategyInterface{
     }
 
     public double getStop() {
-        return stop;
+        return this.stop;
     }
 
     public void setStop(double stop) {
         this.stop = stop;
     }
 
-    public Position getCurrent_position() {
-        return current_position;
+    public Position getCurrentPosition() {
+        return this.currentPosition;
     }
 
-    public void setCurrent_position(Position current_position) {
-        this.current_position = current_position;
+    public void setCurrentPosition(Position current_position) {
+        this.currentPosition = current_position;
     }
 }
