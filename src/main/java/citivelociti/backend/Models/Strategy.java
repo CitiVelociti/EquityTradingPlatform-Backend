@@ -4,18 +4,26 @@ import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Enums.StrategyType;
 
-public class StrategyImpl implements StrategyInterface{
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-    private int id;
+public class Strategy implements StrategyInterface{
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="id")
+    private Integer id;
     private StrategyType strategy_type;
     private Status status;
     private String ticker;
-    private double volume;
-    private double limit;
-    private double stop;
+    private Double volume;
+    private Double limit;
+    private Double stop;
     private Position current_position;
 
-    public StrategyImpl(String ticker, double volume, double limit, double stop)
+    public Strategy(String ticker, Double volume, Double limit, Double stop)
     {
         current_position = Position.CLOSED;
         status = Status.ACTIVE;
