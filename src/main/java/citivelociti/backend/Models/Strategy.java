@@ -3,6 +3,8 @@ package citivelociti.backend.Models;
 import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Enums.StrategyType;
+import javax.persistence.*;
+
 
 import javax.persistence.*;
 

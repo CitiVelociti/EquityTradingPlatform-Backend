@@ -7,11 +7,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class StrategyService {
-
     @Autowired
     StrategyRepo strategyRepo;
 
-    public Strategy addNewStrategy(Strategy strat) {
-        return strategyRepo.save(strat);
+    public void save(Strategy s){
+        strategyRepo.save(s);
     }
 }
