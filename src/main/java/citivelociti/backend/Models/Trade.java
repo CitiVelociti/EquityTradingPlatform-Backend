@@ -2,10 +2,16 @@ package citivelociti.backend.Models;
 
 import citivelociti.backend.Enums.TradeStatus;
 import org.springframework.data.annotation.Id;
+<<<<<<< HEAD
 import javax.persistence.*;
+=======
+>>>>>>> master
 import java.util.Date;
 import java.util.Calendar;
+import javax.persistence.*;
 
+@Entity
+@Table(name="trade")
 public class Trade implements ITrade {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

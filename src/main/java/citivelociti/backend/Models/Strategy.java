@@ -4,6 +4,7 @@ import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Enums.StrategyType;
 
+
 public class Strategy implements IStrategy {
 
     private int id;
