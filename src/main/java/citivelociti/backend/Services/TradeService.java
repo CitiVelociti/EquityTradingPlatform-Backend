@@ -10,7 +10,7 @@ public class TradeService {
     @Autowired
     TradeRepo tradeRepo;
 
-    public void save(Trade t){
+    public void save(Trade t) {
         tradeRepo.save(t);
     }
 }

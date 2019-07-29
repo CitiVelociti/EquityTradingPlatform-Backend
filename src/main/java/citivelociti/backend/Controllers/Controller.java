@@ -16,11 +16,11 @@ public class Controller {
     StrategyService strategyService;
 
     @RequestMapping("/")
-    public String helloWorld(){
+    public String helloWorld() {
 
-        TMAStrategy newTMA = new TMAStrategy("GOOG",5.0,5.0,5.0, 1, 10);
+        TMAStrategy newTMA = new TMAStrategy("GOOG", 5.0, 5.0, 5.0, 1, 10);
         // Trade t = new Trade(s.getId(), true, 5);
-        Strategy strat = new Strategy("GOOG",5.0,5.0,5.0);
+        Strategy strat = new Strategy("GOOG", 5.0, 5.0, 5.0);
         strategyService.save(strat);
         strategyService.save(newTMA);
 

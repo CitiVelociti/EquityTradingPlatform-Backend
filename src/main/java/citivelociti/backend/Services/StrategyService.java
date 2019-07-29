@@ -17,7 +17,8 @@ public class StrategyService {
     public List<Strategy> findAll() {
         return strategyRepo.findAll();
     }
-    public void save(Strategy s){
+
+    public void save(Strategy s) {
         strategyRepo.save(s);
     }
 
@@ -26,7 +27,7 @@ public class StrategyService {
         return strategyRepo.findById(Id);
     }
 
-    public List<Strategy> findAllByType(String type){
+    public List<Strategy> findAllByType(String type) {
         return strategyRepo.findAllByType(type);
     }
 
@@ -36,17 +37,14 @@ public class StrategyService {
 
     public Strategy startById(int id) {
         Strategy strategy = strategyRepo.findById(id);
-        if(strategy.getStatus() != Status.PAUSED) {
-            //throw error
-        } else {
+        if (strategy.getStatus() == Status.PAUSED) {
             strategy.setStatus(Status.PAUSED);
             strategyRepo.save(strategy);
         }
-
         return strategy;
     }
 
-    public Strategy stopById(int id){
+    public Strategy stopById(int id) {
         Strategy strategy = strategyRepo.findById(id);
         strategy.setStatus(Status.PAUSED);
         strategyRepo.save(strategy);
