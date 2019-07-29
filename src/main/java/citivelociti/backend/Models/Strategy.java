@@ -5,14 +5,20 @@ import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Enums.StrategyType;
 import javax.persistence.*;
 
+
+import javax.persistence.*;
+
+
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name="strategy")
 public class Strategy implements IStrategy {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer id;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private String name;
     private StrategyType strategyType;
     private Status status;
     private String ticker;
@@ -21,7 +27,7 @@ public class Strategy implements IStrategy {
     private Double stop;
     private Position currentPosition;
 
-    public Strategy(String ticker, double volume, double limit, double stop) {
+    public Strategy(String ticker, Double volume, Double limit, Double stop) {
         this.currentPosition = Position.CLOSED;
         this.status = Status.ACTIVE;
         this.ticker = ticker;
