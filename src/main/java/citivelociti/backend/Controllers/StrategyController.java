@@ -1,18 +1,34 @@
 package citivelociti.backend.Controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import citivelociti.backend.Models.Strategy;
+import citivelociti.backend.Services.StrategyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/strategy")
+import java.util.List;
+
+@RestController
+@RequestMapping("/strategy")
 public class StrategyController {
 
+    @Autowired
+    StrategyService strategyService;
 
-    @RequestMapping(value = "/getAll", method = RequestMethod.GET)
-    public String getAllStrategies()
+
+
+
+    @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody List<Strategy> getAllStrategies()
     {
-        return "";
+
+        return strategyService.findAll();
+
     }
+
+
+
+
 
     @RequestMapping(value = "/getAllByStatus", method = RequestMethod.GET)
     public String getAllStrategiesByStatus()
@@ -20,10 +36,17 @@ public class StrategyController {
         return "";
     }
 
-    @RequestMapping(value = "/getAllById", method = RequestMethod.GET)
-    public String getAllStrategiesById()
+    @RequestMapping(value = "/getById/{Id}", method = RequestMethod.GET)
+    public @ResponseBody Strategy getAllStrategiesById(@PathVariable int Id)
     {
-        return "";
+        return strategyService.findById(Id);
+    }
+
+
+    @RequestMapping(value = "/getAllByType/{type}", method = RequestMethod.GET)
+    public @ResponseBody List<Strategy> getAllStrategiesById(@PathVariable String type)
+    {
+        return strategyService.findAllByType(type);
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)

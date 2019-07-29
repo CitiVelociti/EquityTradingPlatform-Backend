@@ -1,13 +1,14 @@
 package citivelociti.backend.Models;
 import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.Status;
-import citivelociti.backend.Enums.StrategyType;
 
 import javax.persistence.*;
 
 
 @Entity
 @Table(name="strategy")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public class Strategy implements IStrategy {
 
 
@@ -15,6 +16,8 @@ public class Strategy implements IStrategy {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String name;
+    @Column(insertable = false, updatable = false)
+    private String type;
     @Enumerated
     private Status status;
     private String ticker;
@@ -24,6 +27,9 @@ public class Strategy implements IStrategy {
     @Enumerated
     private Position currentPosition;
 
+    public Strategy() {
+    }
+
     public Strategy(String ticker, Double volume, Double limit, Double stop) {
         this.currentPosition = Position.CLOSED;
         this.status = Status.ACTIVE;
@@ -31,6 +37,14 @@ public class Strategy implements IStrategy {
         this.volume = volume;
         this.limits = limit;
         this.stop = stop;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Integer getId() {
@@ -96,4 +110,6 @@ public class Strategy implements IStrategy {
     public void setCurrentPosition(Position currentPosition) {
         this.currentPosition = currentPosition;
     }
+
+
 }
