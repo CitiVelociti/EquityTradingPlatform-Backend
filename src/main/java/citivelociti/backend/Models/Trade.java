@@ -1,7 +1,6 @@
 package citivelociti.backend.Models;
 
 import citivelociti.backend.Enums.TradeStatus;
-import org.springframework.data.annotation.Id;
 import java.util.Date;
 import java.util.Calendar;
 import javax.persistence.*;
