@@ -16,7 +16,7 @@ public class Strategy implements IStrategy {
     //private StrategyType strategyType;
     //private Status status;
     private String ticker;
-   // private Double volume;
+    private Double volume;
     private Double limit;
     private Double stop;
     //private Position currentPosition;
