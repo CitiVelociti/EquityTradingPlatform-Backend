@@ -34,4 +34,29 @@ public class StrategyService {
     public List<Strategy> findAllByStatus(Status status) {
         return strategyRepo.findAllByStatus(status);
     }
+
+    public Strategy startById(int id)
+    {
+        Strategy strategy = strategyRepo.findById(id);
+        if(strategy.getStatus() != Status.PAUSED)
+        {
+            //throw error
+        }
+        else
+        {
+            strategy.setStatus(Status.PAUSED);
+            strategyRepo.save(strategy);
+        }
+
+        return strategy;
+    }
+
+    public Strategy stopById(int id)
+    {
+        Strategy strategy = strategyRepo.findById(id);
+        strategy.setStatus(Status.PAUSED);
+        strategyRepo.save(strategy);
+        return strategy;
+    }
+
 }

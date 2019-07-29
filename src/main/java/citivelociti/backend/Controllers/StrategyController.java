@@ -16,10 +16,10 @@ public class StrategyController {
     @Autowired
     StrategyService strategyService;
 
-    @GetMapping(value = "/getById/{Id}")
-    public @ResponseBody Strategy getAllStrategiesById(@PathVariable int Id)
+    @GetMapping(value = "/getById/{id}")
+    public @ResponseBody Strategy getAllStrategiesById(@PathVariable int id)
     {
-        return strategyService.findById(Id);
+        return strategyService.findById(id);
     }
 
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,10 +49,16 @@ public class StrategyController {
         return "";
     }
 
-    @GetMapping(value = "/stopById")
-    public String stopStrategyById()
+    @GetMapping(value = "/startById/{id}")
+    public Strategy startStrategyById(@PathVariable int id)
     {
-        return "";
+        return strategyService.startById(id);
+    }
+
+    @GetMapping(value = "/stopById/{id}")
+    public Strategy stopStrategyById(@PathVariable int id)
+    {
+        return strategyService.stopById(id);
     }
 
 
