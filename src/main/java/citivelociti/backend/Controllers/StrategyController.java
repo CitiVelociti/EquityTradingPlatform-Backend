@@ -29,6 +29,7 @@ public class StrategyController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public String createStrategy()
     {
+
         return "";
     }
 

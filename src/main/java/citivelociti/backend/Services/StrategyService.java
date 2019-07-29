@@ -1,4 +1,4 @@
-/*package citivelociti.backend.Services;
+package citivelociti.backend.Services;
 
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Repositories.StrategyRepo;
@@ -15,4 +15,3 @@ public class StrategyService {
         return strategyRepo.save(strat);
     }
 }
-*/
