@@ -1,102 +1,69 @@
 package citivelociti.backend.Models;
-
-import citivelociti.backend.Enums.Position;
-import citivelociti.backend.Enums.Status;
-import citivelociti.backend.Enums.StrategyType;
 import javax.persistence.*;
 
 
-import javax.persistence.*;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name="strategy")
 public class Strategy implements IStrategy {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String name;
-    private StrategyType strategyType;
-    private Status status;
+   // private String name;
+    //private StrategyType strategyType;
+    //private Status status;
     private String ticker;
-    private Double volume;
+   // private Double volume;
     private Double limit;
     private Double stop;
-    private Position currentPosition;
+    //private Position currentPosition;
 
     public Strategy(String ticker, Double volume, Double limit, Double stop) {
-        this.currentPosition = Position.CLOSED;
-        this.status = Status.ACTIVE;
+       // this.currentPosition = Position.CLOSED;
+       // this.status = Status.ACTIVE;
         this.ticker = ticker;
-        this.volume = volume;
+        //this.volume = volume;
         this.limit = limit;
         this.stop = stop;
     }
 
-    public int getId() {
-        return this.id;
+    public Integer getId() {
+        return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public StrategyType getStrategyType() {
-        return this.strategyType;
-    }
-
-    public void setStrategyType(StrategyType strategyType) {
-        this.strategyType = strategyType;
-    }
-
-    public Status getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 
     public String getTicker() {
-        return this.ticker;
+        return ticker;
     }
 
     public void setTicker(String ticker) {
         this.ticker = ticker;
     }
 
-    public double getVolume() {
-        return this.volume;
+
+
+    public Double getLimit() {
+        return limit;
     }
 
-    public void setVolume(double volume) {
-        this.volume = volume;
-    }
-
-    public double getLimit() {
-        return this.limit;
-    }
-
-    public void setLimit(double limit) {
+    public void setLimit(Double limit) {
         this.limit = limit;
     }
 
-    public double getStop() {
-        return this.stop;
+    public Double getStop() {
+        return stop;
     }
 
-    public void setStop(double stop) {
+    public void setStop(Double stop) {
         this.stop = stop;
     }
 
-    public Position getCurrentPosition() {
-        return this.currentPosition;
-    }
 
-    public void setCurrentPosition(Position current_position) {
-        this.currentPosition = current_position;
-    }
 }
