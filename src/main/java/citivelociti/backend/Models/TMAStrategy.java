@@ -1,14 +1,11 @@
-/*package citivelociti.backend.Models;
+package citivelociti.backend.Models;
 
 import javax.persistence.*;
 
 @Entity
 public class TMAStrategy extends Strategy {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id")
-    private Integer id;
+
 
     private Integer slowAvgIntervale;
     private Integer fastAvgIntervale;
@@ -44,4 +41,4 @@ public class TMAStrategy extends Strategy {
         this.shortBelow = shortBelow;
     }
 }
-*/
+
