@@ -1,7 +1,7 @@
 package citivelociti.backend.Services;
 
+import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Models.Strategy;
-import citivelociti.backend.Models.TMAStrategy;
 import citivelociti.backend.Repositories.StrategyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,5 +31,7 @@ public class StrategyService {
         return strategyRepo.findAllByType(type);
     }
 
-
+    public List<Strategy> findAllByStatus(Status status) {
+        return strategyRepo.findAllByStatus(status);
+    }
 }
