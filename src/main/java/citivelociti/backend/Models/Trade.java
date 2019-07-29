@@ -2,13 +2,15 @@ package citivelociti.backend.Models;
 
 import citivelociti.backend.Enums.TradeStatus;
 import org.springframework.data.annotation.Id;
-// import javax.persistence.*;
 import java.util.Date;
 import java.util.Calendar;
+import javax.persistence.*;
 
+@Entity
+@Table(name="trade")
 public class Trade implements ITrade {
     @Id
-    // @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
     // The strategy which this trade is using
