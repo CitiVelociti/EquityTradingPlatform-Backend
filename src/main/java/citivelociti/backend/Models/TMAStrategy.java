@@ -5,7 +5,6 @@ import javax.persistence.*;
 @Entity
 public class TMAStrategy extends Strategy {
 
-
     private Integer slowAvgIntervale;
     private Integer fastAvgIntervale;
     private Boolean shortBelow;
