@@ -1,4 +1,5 @@
 package citivelociti.backend.Models;
+
 import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.Status;
 
@@ -6,7 +7,7 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name="strategy")
+@Table(name = "strategy")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public class Strategy implements IStrategy {
@@ -30,8 +31,8 @@ public class Strategy implements IStrategy {
     public Strategy() {
     }
 
-    public Strategy(String name, String ticker, Double volume, Double limit, Double stop) {
-        this.name = name;
+    public Strategy(String ticker, Double volume, Double limit, Double stop) {
+
         this.currentPosition = Position.CLOSED;
         this.status = Status.ACTIVE;
         this.ticker = ticker;

@@ -4,13 +4,18 @@ import javax.persistence.*;
 
 @Entity
 public class TMAStrategy extends Strategy {
+
     private Integer slowAvgIntervale;
     private Integer fastAvgIntervale;
     private Boolean shortBelow;
 
-    public TMAStrategy(){ super(); };
+    public TMAStrategy() {
+        super();
+    }
 
-    public TMAStrategy(String ticker, Double volume, Double limit, Double stop, Integer slowAvgIntervale, Integer fastAvgIntervale){
+    ;
+
+    public TMAStrategy(String ticker, Double volume, Double limit, Double stop, Integer slowAvgIntervale, Integer fastAvgIntervale) {
         super(ticker, volume, limit, stop);
         this.slowAvgIntervale = slowAvgIntervale;
         this.fastAvgIntervale = fastAvgIntervale;

@@ -17,22 +17,26 @@ public class StrategyController {
     StrategyService strategyService;
 
     @GetMapping(value = "/getById/{id}")
-    public @ResponseBody Strategy getAllStrategiesById(@PathVariable int id) {
+    public @ResponseBody
+    Strategy getAllStrategiesById(@PathVariable int id) {
         return strategyService.findById(id);
     }
 
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody List<Strategy> getAllStrategies() {
+    public @ResponseBody
+    List<Strategy> getAllStrategies() {
         return strategyService.findAll();
     }
 
     @GetMapping(value = "/getAllByType/{type}")
-    public @ResponseBody List<Strategy> getAllStrategiesById(@PathVariable String type) {
+    public @ResponseBody
+    List<Strategy> getAllStrategiesById(@PathVariable String type) {
         return strategyService.findAllByType(type);
     }
 
     @GetMapping(value = "/getAllByStatus/{status}")
-    public @ResponseBody List<Strategy> getAllStrategiesByStatus(@PathVariable Status status) {
+    public @ResponseBody
+    List<Strategy> getAllStrategiesByStatus(@PathVariable Status status) {
         return strategyService.findAllByStatus(status);
     }
 
@@ -42,12 +46,14 @@ public class StrategyController {
     }
 
     @GetMapping(value = "/startById/{id}")
-    public @ResponseBody Strategy startStrategyById(@PathVariable int id) {
+    public @ResponseBody
+    Strategy startStrategyById(@PathVariable int id) {
         return strategyService.startById(id);
     }
 
     @GetMapping(value = "/stopById/{id}")
-    public @ResponseBody Strategy stopStrategyById(@PathVariable int id) {
+    public @ResponseBody
+    Strategy stopStrategyById(@PathVariable int id) {
         return strategyService.stopById(id);
     }
 
