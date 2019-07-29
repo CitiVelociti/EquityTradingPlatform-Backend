@@ -2,10 +2,6 @@ package citivelociti.backend.Models;
 
 import citivelociti.backend.Enums.TradeStatus;
 import org.springframework.data.annotation.Id;
-<<<<<<< HEAD
-import javax.persistence.*;
-=======
->>>>>>> master
 import java.util.Date;
 import java.util.Calendar;
 import javax.persistence.*;
@@ -26,7 +22,7 @@ public class Trade implements ITrade {
     private Date closeDate;
     private TradeStatus status;
 
-    public Trade(int strategyId, boolean buy, double price, Date openDate) {
+    public Trade(int strategyId, boolean buy, double price) {
         this.strategyId = strategyId;
         this.buy = buy;
         this.price = price;

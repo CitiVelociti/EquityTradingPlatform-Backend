@@ -3,17 +3,22 @@ package citivelociti.backend.Models;
 import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Enums.StrategyType;
+import javax.persistence.*;
 
-
+@Entity
+@Table(name="strategy")
 public class Strategy implements IStrategy {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Integer id;
+
     private StrategyType strategyType;
     private Status status;
     private String ticker;
-    private double volume;
-    private double limit;
-    private double stop;
+    private Double volume;
+    private Double limit;
+    private Double stop;
     private Position currentPosition;
 
     public Strategy(String ticker, double volume, double limit, double stop) {
