@@ -8,6 +8,7 @@ import citivelociti.backend.Enums.StrategyType;
 public class Strategy implements IStrategy {
 
     private int id;
+    private String name;
     private StrategyType strategyType;
     private Status status;
     private String ticker;
