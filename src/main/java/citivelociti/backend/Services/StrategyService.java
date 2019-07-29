@@ -14,8 +14,7 @@ public class StrategyService {
     @Autowired
     StrategyRepo strategyRepo;
 
-    public List<Strategy> findAll()
-    {
+    public List<Strategy> findAll() {
         return strategyRepo.findAll();
     }
     public void save(Strategy s){
@@ -35,15 +34,11 @@ public class StrategyService {
         return strategyRepo.findAllByStatus(status);
     }
 
-    public Strategy startById(int id)
-    {
+    public Strategy startById(int id) {
         Strategy strategy = strategyRepo.findById(id);
-        if(strategy.getStatus() != Status.PAUSED)
-        {
+        if(strategy.getStatus() != Status.PAUSED) {
             //throw error
-        }
-        else
-        {
+        } else {
             strategy.setStatus(Status.PAUSED);
             strategyRepo.save(strategy);
         }
@@ -51,8 +46,7 @@ public class StrategyService {
         return strategy;
     }
 
-    public Strategy stopById(int id)
-    {
+    public Strategy stopById(int id){
         Strategy strategy = strategyRepo.findById(id);
         strategy.setStatus(Status.PAUSED);
         strategyRepo.save(strategy);

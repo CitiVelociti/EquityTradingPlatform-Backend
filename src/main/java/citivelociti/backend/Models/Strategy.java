@@ -30,7 +30,8 @@ public class Strategy implements IStrategy {
     public Strategy() {
     }
 
-    public Strategy(String ticker, Double volume, Double limit, Double stop) {
+    public Strategy(String name, String ticker, Double volume, Double limit, Double stop) {
+        this.name = name;
         this.currentPosition = Position.CLOSED;
         this.status = Status.ACTIVE;
         this.ticker = ticker;
