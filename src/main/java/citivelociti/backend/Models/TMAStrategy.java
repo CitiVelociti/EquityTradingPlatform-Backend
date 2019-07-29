@@ -8,6 +8,8 @@ public class TMAStrategy extends Strategy {
     private Integer fastAvgIntervale;
     private Boolean shortBelow;
 
+    public TMAStrategy(){ super(); };
+
     public TMAStrategy(String ticker, Double volume, Double limit, Double stop, Integer slowAvgIntervale, Integer fastAvgIntervale){
         super(ticker, volume, limit, stop);
         this.slowAvgIntervale = slowAvgIntervale;
