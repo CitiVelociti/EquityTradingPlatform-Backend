@@ -1,0 +1,29 @@
+version: '3.0'
+services:
+    mysql:
+        container_name: db
+        build:
+            context: .
+            dockerfile: Dockerfile-mysql
+        image: cd/mysql:LATEST
+        ports:
+            - "3306:3306"
+        volumes:
+            - /myapp:/var/lib/mysql
+        restart: always
+        environment:
+            MYSQL_USER: 'root'
+            MYSQL_ROOT_PASSWORD: 'c0nygre1'
+        command: --explicit_defaults_for_timestamp
+
+    cd:
+        container_name: backend
+        build:
+            context: .
+            dockerfile: Dockerfile-backend
+        image: cd/backend:LATEST
+        links:
+            - mysql:db
+        ports:
+            - "8080:8081"
+        restart: always
