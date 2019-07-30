@@ -25,7 +25,9 @@ public class Trade implements ITrade {
     @Enumerated
     private TradeStatus status;     // OPEN, FILLED, REJECTED
 
-    public Trade(){}
+    public Trade() {
+        
+    }
 
     public Trade(int strategyId, boolean buy, double price) {
         this.strategyId = strategyId;
