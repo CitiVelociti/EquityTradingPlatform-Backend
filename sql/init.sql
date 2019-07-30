@@ -1,1 +1,2 @@
-CREATE SCHEMA velocitidb;
+CREATE DATABASE IF NOT EXISTS velocitidb;
+use velocitidb;
