@@ -21,9 +21,9 @@ public class TradeService {
         return tradeRepo.findById(id);
     }
 
-    // public void deleteById(Integer id) {
-    //     tradeRepo.deleteById(id);
-    // }
+    public void deleteById(Integer id) {
+        tradeRepo.deleteById(id);
+    }
 
     public List<Trade> findAllByStrategyId(Integer strategyId) {
         return tradeRepo.findAllByStrategyId(strategyId);
@@ -31,6 +31,14 @@ public class TradeService {
 
     public List<Trade> findAllByBuy(Boolean buy) {
         return tradeRepo.findAllByBuy(buy);
+    }
+
+    public List<Trade> findAllByOpenDateByDateAsc() {
+        return tradeRepo.findAllByOpenDateByDateAsc();
+    }
+
+    public List<Trade> findAllByCloseDateByDateAsc() {
+        return tradeRepo.findAllByCloseDateByDateAsc();
     }
 
     public List<Trade> findAllByOpenDateByDateDesc() {
