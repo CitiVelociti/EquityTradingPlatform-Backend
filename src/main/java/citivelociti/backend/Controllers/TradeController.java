@@ -17,56 +17,47 @@ public class TradeController {
     TradeService tradeService;
 
     @GetMapping(value = "/getById/{id}")
-    public @ResponseBody
-    Trade getAllTradesById(@PathVariable int id) {
+    public @ResponseBody Trade getAllTradesById(@PathVariable int id) {
         return tradeService.findById(id);
     }
 
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    List<Trade> getAllTrades() {
+    public @ResponseBody List<Trade> getAllTrades() {
         return tradeService.findAll();
     }
 
     @GetMapping(value = "/getAllByStrategyId/{strategyId}")
-    public @ResponseBody
-    List<Trade> getAllTradesByStrategyId(@PathVariable Integer strategyId) {
+    public @ResponseBody List<Trade> getAllTradesByStrategyId(@PathVariable Integer strategyId) {
         return tradeService.findAllByStrategyId(strategyId);
     }
 
     @GetMapping(value = "/getAllByBuyOrSell/{buy}")
-    public @ResponseBody
-    List<Trade> getAllTradeByBuyOrSell(@PathVariable Boolean buy) {
+    public @ResponseBody List<Trade> getAllTradeByBuyOrSell(@PathVariable Boolean buy) {
         return tradeService.findAllByBuy(buy);
     }
 
     @GetMapping(value = "/getAllByOpenDateAsc")
-    public @ResponseBody
-    List<Trade> findAllByOrderByOpenDateAsc() {
+    public @ResponseBody List<Trade> findAllByOrderByOpenDateAsc() {
         return tradeService.findAllByOrderByOpenDateAsc();
     }
 
     @GetMapping(value = "/getAllByCloseDateAsc")
-    public @ResponseBody
-    List<Trade> findAllByOrderByCloseDateAsc() {
+    public @ResponseBody List<Trade> findAllByOrderByCloseDateAsc() {
         return tradeService.findAllByOrderByCloseDateAsc();
     }
 
     @GetMapping(value = "/getAllByOpenDateDesc")
-    public @ResponseBody
-    List<Trade> getAllByOpenDateDesc() {
+    public @ResponseBody List<Trade> getAllByOpenDateDesc() {
         return tradeService.findAllByOrderByOpenDateDesc();
     }
 
     @GetMapping(value = "/getAllByCloseDateDesc")
-    public @ResponseBody
-    List<Trade> getAllByCloseDateDesc() {
+    public @ResponseBody List<Trade> getAllByCloseDateDesc() {
         return tradeService.findAllByOrderByCloseDateDesc();
     }
 
     @GetMapping(value = "/getAllByStatus/{status}")
-    public @ResponseBody
-    List<Trade> getAllTradesByStatus(@PathVariable TradeStatus status) {
+    public @ResponseBody List<Trade> getAllTradesByStatus(@PathVariable TradeStatus status) {
         return tradeService.findAllByStatus(status);
     }
 
