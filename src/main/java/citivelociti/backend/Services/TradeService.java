@@ -33,15 +33,15 @@ public class TradeService {
         return tradeRepo.findAllByBuy(buy);
     }
 
-    /*
+
     public List<Trade> findAllByOpenDateByDateDesc() {
-        return tradeRepo.findAllByOpenDateByDateDesc();
+        return tradeRepo.findAllByOrderByOpenDateAsc();
     }
 
     public List<Trade> findAllByCloseDateByDateDesc() {
-        return tradeRepo.findAllByCloseDateByDateDesc();
+        return tradeRepo.findAllByOrderByOpenDateDesc();
     }
-    */
+
 
     public List<Trade> findAllByStatus(TradeStatus status) {
         return tradeRepo.findAllByStatus(status);

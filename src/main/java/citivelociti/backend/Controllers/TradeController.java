@@ -40,7 +40,7 @@ public class TradeController {
         return tradeService.findAllByBuy(buy);
     }
 
-    /*
+
     @GetMapping(value = "/getAllTradesByOpenDate")
     public @ResponseBody
     List<Trade> getAllTradeByOpenDate() {
@@ -52,7 +52,7 @@ public class TradeController {
     List<Trade> getAllTradeByCloseDate() {
         return tradeService.findAllByCloseDateByDateDesc();
     }
-    */
+
 
     @GetMapping(value = "/getAllTradesByStatus/{status}")
     public @ResponseBody
