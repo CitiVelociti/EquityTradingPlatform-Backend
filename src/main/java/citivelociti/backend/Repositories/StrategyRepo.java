@@ -3,7 +3,6 @@ package citivelociti.backend.Repositories;
 import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Models.Strategy;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,9 +10,13 @@ import java.util.List;
 @Repository
 public interface StrategyRepo extends JpaRepository<Strategy, Integer> {
 
-    Strategy findById(int Id);
+    public Strategy findById(int id);
 
-    List<Strategy> findAllByType(String type);
+    public void deleteById(Integer id);
 
-    List<Strategy> findAllByStatus(Status status);
+    public List<Strategy> findAllByType(String type);
+
+    public List<Strategy> findAllByStatus(Status status);
+
+    public List<Strategy> findAll();
 }

@@ -2,25 +2,28 @@ package citivelociti.backend.Models;
 
 import citivelociti.backend.Enums.TradeStatus;
 
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
 import javax.persistence.*;
 
 @Entity
 @Table(name = "trade")
 public class Trade implements ITrade {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
-    // The strategy which this trade is using
-    private Integer strategyId;
-    // True if the trader is buying, o.w. false -> trader is selling
-    private Boolean buy;
-    private Double price;
-    private Date openDate;
-    private Date closeDate;
-    private TradeStatus status;
+    private Integer strategyId;     // The strategy which this trade is using
+    private Boolean buy;            // True if the trader is buying, o.w. false -> trader is selling
+    private Double price;           // Price of stock                   
+    @Basic
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date openDate;          // Date which the strategy started
+    @Basic
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date closeDate;         // Date which the strategy ended
+    @Enumerated
+    private TradeStatus status;     // OPEN, FILLED, REJECTED
 
     public Trade(int strategyId, boolean buy, double price) {
         this.strategyId = strategyId;
