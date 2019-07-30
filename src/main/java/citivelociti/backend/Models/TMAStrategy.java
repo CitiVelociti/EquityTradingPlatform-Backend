@@ -1,5 +1,10 @@
 package citivelociti.backend.Models;
 
+import citivelociti.backend.Services.EngineService;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.*;
 
 /*
@@ -13,6 +18,8 @@ import javax.persistence.*;
 
 @Entity
 public class TMAStrategy extends Strategy {
+
+
 
     private Integer slowAvgIntervale;
     private Integer fastAvgIntervale;
@@ -49,5 +56,6 @@ public class TMAStrategy extends Strategy {
     public void setShortBelow(Boolean shortBelow) {
         this.shortBelow = shortBelow;
     }
+
 }
 

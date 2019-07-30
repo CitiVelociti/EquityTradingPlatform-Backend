@@ -1,15 +1,19 @@
 package citivelociti.backend.Controllers;
 
 import citivelociti.backend.Enums.Status;
+import citivelociti.backend.Models.BBStrategy;
 import citivelociti.backend.Models.Strategy;
+import citivelociti.backend.Models.TMAStrategy;
 import citivelociti.backend.Services.StrategyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/strategy")
 public class StrategyController {
 
@@ -40,8 +44,30 @@ public class StrategyController {
     }
 
     @PostMapping(value = "/create")
-    public String createStrategy() {
-        return "";
+    public Strategy createStrategy(HttpServletRequest request) {
+
+        String type = request.getParameter("type");
+        String name = request.getParameter("name");
+        String ticker = request.getParameter("ticker");
+        Double quantity = Double.parseDouble(request.getParameter("quantity"));
+        Double limit = Double.parseDouble(request.getParameter("limit"));
+        Double stop = Double.parseDouble(request.getParameter("stop"));
+
+        if(type.equals("TMAStrategy")){
+            Integer slowAvgIntervale = Integer.parseInt(request.getParameter("slowAvgIntervale"));
+            Integer fastAvgIntervale = Integer.parseInt(request.getParameter("slowAvgIntervale"));
+            TMAStrategy newTMA = new TMAStrategy(name, ticker, quantity, limit, stop, slowAvgIntervale, fastAvgIntervale);
+            return strategyService.save(newTMA);
+        } else if(type.equals("BBStrategy")) {
+
+            Integer timeSpan = Integer.parseInt(request.getParameter("timeSpan"));
+            BBStrategy newBB = new BBStrategy(name, ticker, quantity, limit, stop, timeSpan);
+            return strategyService.save(newBB);
+
+        }
+
+
+        return null;
     }
 
     @GetMapping(value = "/startById/{id}")

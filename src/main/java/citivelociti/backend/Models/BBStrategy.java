@@ -47,5 +47,6 @@ public class BBStrategy extends Strategy {
     public void setStd(Integer std) {
         this.std = std;
     }
+
 }
 
