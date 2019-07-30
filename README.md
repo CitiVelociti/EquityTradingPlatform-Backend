@@ -19,6 +19,6 @@
 
 ###To run -- database must run before the server
 * docker build --file  Dockerfile-mysql -t cd/mysql .
-* docker build --file Dockerfile-cd-server -t cd/cd-server .
+* docker build --file Dockerfile-backend -t cd/backend .
 * docker run -p 3306:3306 --name mysql -d cd/mysql
-* docker run -p 8080:8080 --link mysql:mysql -d cd/cd-server
+* docker run -p 8080:8080 --link mysql:mysql -d cd/backend
