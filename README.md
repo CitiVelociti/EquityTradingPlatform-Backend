@@ -21,4 +21,4 @@
 * docker build --file  Dockerfile-mysql -t cd/mysql .
 * docker build --file Dockerfile-backend -t cd/backend .
 * docker run -p 3306:3306 --name mysql -d cd/mysql
-* docker run -p 8080:8080 --link mysql:mysql -d cd/backend
+* docker run -p 8080:8081 --link mysql:mysql -d cd/backend

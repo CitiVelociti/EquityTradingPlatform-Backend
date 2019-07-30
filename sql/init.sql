@@ -1,1 +1,1 @@
-CREATE SCHEMA [IF NOT EXISTS] velocitidb;
+CREATE SCHEMA velocitidb;
