@@ -5,13 +5,11 @@ import citivelociti.backend.Enums.Status;
 
 import javax.persistence.*;
 
-
 @Entity
 @Table(name = "strategy")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public class Strategy implements IStrategy {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,11 +26,7 @@ public class Strategy implements IStrategy {
     @Enumerated
     private Position currentPosition;
 
-    public Strategy() {
-    }
-
     public Strategy(String ticker, Double volume, Double limit, Double stop) {
-
         this.currentPosition = Position.CLOSED;
         this.status = Status.ACTIVE;
         this.ticker = ticker;
@@ -112,6 +106,5 @@ public class Strategy implements IStrategy {
     public void setCurrentPosition(Position currentPosition) {
         this.currentPosition = currentPosition;
     }
-
-
+    
 }

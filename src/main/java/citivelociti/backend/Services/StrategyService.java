@@ -14,18 +14,17 @@ public class StrategyService {
     @Autowired
     StrategyRepo strategyRepo;
 
-    public List<Strategy> findAll() {
-        return strategyRepo.findAll();
-    }
-
     public void save(Strategy s) {
         strategyRepo.save(s);
     }
 
-
-    public Strategy findById(int Id) {
-        return strategyRepo.findById(Id);
+    public Strategy findById(int id) {
+        return strategyRepo.findById(id);
     }
+
+    // public void deleteById(Integer id) {
+    //     strategyRepo.deleteById(id);
+    // }
 
     public List<Strategy> findAllByType(String type) {
         return strategyRepo.findAllByType(type);
@@ -35,6 +34,13 @@ public class StrategyService {
         return strategyRepo.findAllByStatus(status);
     }
 
+    public List<Strategy> findAll() {
+        return strategyRepo.findAll();
+    }
+
+    /*
+     * If the status is paused, then pause it? do you mean active instead?
+     */
     public Strategy startById(int id) {
         Strategy strategy = strategyRepo.findById(id);
         if (strategy.getStatus() == Status.PAUSED) {
