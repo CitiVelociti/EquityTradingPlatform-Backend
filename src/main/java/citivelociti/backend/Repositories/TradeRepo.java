@@ -20,11 +20,13 @@ public interface TradeRepo extends JpaRepository<Trade, Integer> {
     // Returns a list of all buys or sells depending on the parameter.
     public List<Trade> findAllByBuy(Boolean buy);
 
-
     public List<Trade> findAllByOrderByOpenDateAsc();
+
+    public List<Trade> findAllByOrderByCloseDateAsc();
 
     public List<Trade> findAllByOrderByOpenDateDesc();
 
+    public List<Trade> findAllByOrderByCloseDateDesc();
 
     // Returns a list of all the trades of a specific status
     public List<Trade> findAllByStatus(TradeStatus status);
