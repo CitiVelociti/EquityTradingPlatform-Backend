@@ -2,6 +2,7 @@ package citivelociti.backend.Models;
 
 import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.Status;
+import citivelociti.backend.Enums.StrategyType;
 
 import javax.persistence.*;
 
@@ -20,17 +21,20 @@ public abstract class Strategy implements IStrategy {
     @Enumerated
     private Status status;
     private String ticker;
-    private Double volume;
+    private Double quantity;
     private Double limits;
     private Double stop;
     @Enumerated
     private Position currentPosition;
 
-    public Strategy(String ticker, Double volume, Double limit, Double stop) {
+    public Strategy(){}
+
+    public Strategy(String name, String ticker, Double quantity, Double limit, Double stop) {
+        this.name = name;
         this.currentPosition = Position.CLOSED;
         this.status = Status.ACTIVE;
         this.ticker = ticker;
-        this.volume = volume;
+        this.quantity = quantity;
         this.limits = limit;
         this.stop = stop;
     }
@@ -75,12 +79,12 @@ public abstract class Strategy implements IStrategy {
         this.ticker = ticker;
     }
 
-    public Double getVolume() {
-        return volume;
+    public Double getQuantity() {
+        return quantity;
     }
 
-    public void setVolume(Double volume) {
-        this.volume = volume;
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
     }
 
     public Double getLimits() {

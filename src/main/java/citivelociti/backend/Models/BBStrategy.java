@@ -15,17 +15,19 @@ public class BBStrategy extends Strategy {
     private Integer timeSpan;   // In seconds
     private Integer std;
 
+    public BBStrategy(){}
+
     /*
      * The default std is typically 2. If the user does not specify the std, we will default it to 2.
      */
-    public BBStrategy(String ticker, Double volume, Double limit, Double stop, Integer timeSpan) {
-        super(ticker, volume, limit, stop);
+    public BBStrategy(String name, String ticker, Double volume, Double limit, Double stop, Integer timeSpan) {
+        super(name, ticker, volume, limit, stop);
         this.timeSpan = timeSpan;
         this.std = 2;
     }
 
-    public BBStrategy(String ticker, Double volume, Double limit, Double stop, Integer timeSpan, Integer std) {
-        super(ticker, volume, limit, stop);
+    public BBStrategy(String name, String ticker, Double quantity, Double limit, Double stop, Integer timeSpan, Integer std) {
+        super(name, ticker, quantity, limit, stop);
         this.timeSpan = timeSpan;
         this.std = std;
     }

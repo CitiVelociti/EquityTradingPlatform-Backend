@@ -44,7 +44,7 @@ public class StrategyService {
     public Strategy startById(int id) {
         Strategy strategy = strategyRepo.findById(id);
         if (strategy.getStatus() == Status.PAUSED) {
-            strategy.setStatus(Status.PAUSED);
+            strategy.setStatus(Status.ACTIVE);
             strategyRepo.save(strategy);
         }
         return strategy;
