@@ -28,10 +28,11 @@ public class EngineService {
     @Scheduled(fixedRate=1000)
     public void readFeed() {
 
+        //Eventually we want to fetch all types of strategies
         activeStrategies = strategyService.findAllByType("TMAStrategy");
+
         for(Strategy strategy : activeStrategies)
         {
-
             System.out.println("Checking Strategy " + strategy.getName() + ":");
             Boolean signal = calculate(strategy);
             System.out.println("Signal: " + signal );
@@ -43,7 +44,6 @@ public class EngineService {
                 System.out.println("CLOSE THE POSITION");
                 strategy.setCurrentPosition(Position.CLOSED);
                 strategyService.save(strategy);
-
             }
         }
 
