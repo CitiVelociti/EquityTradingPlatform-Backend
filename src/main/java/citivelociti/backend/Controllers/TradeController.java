@@ -42,26 +42,26 @@ public class TradeController {
 
     @GetMapping(value = "/getAllByOpenDateAsc")
     public @ResponseBody
-    List<Trade> findAllByOpenDateByDateAsc() {
-        return tradeService.findAllByOpenDateByDateAsc();
+    List<Trade> findAllByOrderByOpenDateAsc() {
+        return tradeService.findAllByOrderByOpenDateAsc();
     }
 
     @GetMapping(value = "/getAllByCloseDateAsc")
     public @ResponseBody
-    List<Trade> findAllByCloseDateByDateAsc() {
-        return tradeService.findAllByCloseDateByDateAsc();
+    List<Trade> findAllByOrderByCloseDateAsc() {
+        return tradeService.findAllByOrderByCloseDateAsc();
     }
 
     @GetMapping(value = "/getAllByOpenDateDesc")
     public @ResponseBody
-    List<Trade> getAllTradeByOpenDateDesc() {
-        return tradeService.findAllByOpenDateByDateDesc();
+    List<Trade> getAllByOpenDateDesc() {
+        return tradeService.findAllByOrderByOpenDateDesc();
     }
 
     @GetMapping(value = "/getAllByCloseDateDesc")
     public @ResponseBody
-    List<Trade> getAllTradeByCloseDateDesc() {
-        return tradeService.findAllByCloseDateByDateDesc();
+    List<Trade> getAllByCloseDateDesc() {
+        return tradeService.findAllByOrderByCloseDateDesc();
     }
 
     @GetMapping(value = "/getAllByStatus/{status}")
