@@ -11,18 +11,16 @@ import java.net.URL;
 @Service
 public class EngineService {
 
-
     @Scheduled(fixedRate=1000)
     public void readFeed() {
 
         //System.out.println("1s");
-        try{
+        try {
             URL url = new URL("http://nyc31.conygre.com:31/Stock/getStockPrice/msft");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             int status = con.getResponseCode();
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             StringBuffer content = new StringBuffer();
             while ((inputLine = in.readLine()) != null) {
@@ -31,6 +29,8 @@ public class EngineService {
             }
             in.close();
             con.disconnect();
-        }catch(Exception e){}
+        } catch(Exception e){
+
+        }
     }
 }

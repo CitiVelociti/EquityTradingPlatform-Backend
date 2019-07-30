@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name = "strategy")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-public class Strategy implements IStrategy {
+public abstract class Strategy implements IStrategy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
