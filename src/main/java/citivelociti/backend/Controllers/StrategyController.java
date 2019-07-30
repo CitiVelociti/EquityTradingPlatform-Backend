@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 @RequestMapping("/strategy")
 public class StrategyController {
 
@@ -44,18 +45,20 @@ public class StrategyController {
     }
 
     @PostMapping(value = "/create")
-    public Strategy createStrategy(HttpServletRequest request) {
+    public Strategy createStrategy(HttpServletRequest request,@RequestBody Map<String, String> payload) {
 
-        String type = request.getParameter("type");
-        String name = request.getParameter("name");
-        String ticker = request.getParameter("ticker");
-        Double quantity = Double.parseDouble(request.getParameter("quantity"));
-        Double limit = Double.parseDouble(request.getParameter("limit"));
-        Double stop = Double.parseDouble(request.getParameter("stop"));
+        System.out.println(payload);
+
+        String type = payload.get("type");
+        String name = payload.get("name");
+        String ticker = payload.get("ticker");
+        Double quantity = Double.parseDouble(payload.get("quantity"));
+        Double limit = Double.parseDouble(payload.get("limit"));
+        Double stop = Double.parseDouble(payload.get("stop"));
 
         if(type.equals("TMAStrategy")){
-            Integer slowAvgIntervale = Integer.parseInt(request.getParameter("slowAvgIntervale"));
-            Integer fastAvgIntervale = Integer.parseInt(request.getParameter("slowAvgIntervale"));
+            Integer slowAvgIntervale = Integer.parseInt(payload.get("slowAvgIntervale"));
+            Integer fastAvgIntervale = Integer.parseInt(payload.get("fastAvgIntervale"));
             TMAStrategy newTMA = new TMAStrategy(name, ticker, quantity, limit, stop, slowAvgIntervale, fastAvgIntervale);
             return strategyService.save(newTMA);
         } else if(type.equals("BBStrategy")) {
@@ -65,7 +68,6 @@ public class StrategyController {
             return strategyService.save(newBB);
 
         }
-
 
         return null;
     }
