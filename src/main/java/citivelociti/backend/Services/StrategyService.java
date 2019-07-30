@@ -14,8 +14,8 @@ public class StrategyService {
     @Autowired
     StrategyRepo strategyRepo;
 
-    public void save(Strategy s) {
-        strategyRepo.save(s);
+    public Strategy save(Strategy s) {
+        return strategyRepo.save(s);
     }
 
     public Strategy findById(int id) {
