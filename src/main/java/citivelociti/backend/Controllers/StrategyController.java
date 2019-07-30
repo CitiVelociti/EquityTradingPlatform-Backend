@@ -18,7 +18,7 @@ public class StrategyController {
 
     @GetMapping(value = "/getById/{id}")
     public @ResponseBody
-    Strategy getAllStrategiesById(@PathVariable int id) {
+    Strategy getAllStrategiesById(@PathVariable Integer id) {
         return strategyService.findById(id);
     }
 
@@ -29,8 +29,7 @@ public class StrategyController {
     }
 
     @GetMapping(value = "/getAllByType/{type}")
-    public @ResponseBody
-    List<Strategy> getAllStrategiesByType(@PathVariable String type) {
+    public @ResponseBody List<Strategy> getAllStrategiesByType(@PathVariable String type) {
         return strategyService.findAllByType(type);
     }
 

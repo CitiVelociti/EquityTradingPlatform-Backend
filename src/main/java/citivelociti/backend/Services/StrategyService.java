@@ -14,8 +14,8 @@ public class StrategyService {
     @Autowired
     StrategyRepo strategyRepo;
 
-    public void save(Strategy s) {
-        strategyRepo.save(s);
+    public Strategy save(Strategy s) {
+        return strategyRepo.save(s);
     }
 
     public Strategy findById(int id) {
@@ -44,7 +44,7 @@ public class StrategyService {
     public Strategy startById(int id) {
         Strategy strategy = strategyRepo.findById(id);
         if (strategy.getStatus() == Status.PAUSED) {
-            strategy.setStatus(Status.PAUSED);
+            strategy.setStatus(Status.ACTIVE);
             strategyRepo.save(strategy);
         }
         return strategy;
