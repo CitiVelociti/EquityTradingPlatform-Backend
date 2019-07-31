@@ -7,7 +7,7 @@
 ## Run with docker commands
 ###Make sure to clear all docker images and containers
 * To remove removable images and containers.
-	* docker system prune
+	* docker system prune --all --force --volumes
 	* docker image prune --all
 * Check containers and if there are any, remove them
 	* docker ps
@@ -22,3 +22,6 @@
 * docker build --file Dockerfile-backend -t cd/backend .
 * docker run -p 3306:3306 --name mysql -d cd/mysql
 * docker run -p 8080:8081 --link mysql:mysql -d cd/backend
+
+* To run yaml,
+	* docker-compose up

@@ -1,7 +1,6 @@
 package citivelociti.backend.Services;
 
 import citivelociti.backend.Enums.Position;
-import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
 import org.json.JSONArray;
@@ -19,42 +18,35 @@ import java.util.List;
 @Service
 public class EngineService {
 
-
     @Autowired
     StrategyService strategyService;
-
     private List<Strategy> activeStrategies;
 
     @Scheduled(fixedRate=1000)
     public void readFeed() {
-
         //Eventually we want to fetch all types of strategies
         activeStrategies = strategyService.findAllByType("TMAStrategy");
 
-        for(Strategy strategy : activeStrategies)
-        {
+        for(Strategy strategy : activeStrategies) {
             System.out.println("Checking Strategy " + strategy.getName() + ":");
             Boolean signal = calculate(strategy);
             System.out.println("Signal: " + signal );
+
             if(signal && strategy.getCurrentPosition() == Position.CLOSED) {
                 System.out.println("OPEN THE POSITION");
                 strategy.setCurrentPosition(Position.OPEN);
                 strategyService.save(strategy);
-            } else if(signal && strategy.getCurrentPosition() == Position.OPEN){
+            } else if(signal && strategy.getCurrentPosition() == Position.OPEN) {
                 System.out.println("CLOSE THE POSITION");
                 strategy.setCurrentPosition(Position.CLOSED);
                 strategyService.save(strategy);
             }
         }
-
     }
 
     public Boolean calculate(Strategy strategy) {
-
         if(strategy.getType().equals("TMAStrategy")) {
-
             TMAStrategy tmaStrategy = (TMAStrategy)strategy;
-
             double slowSMAValue = simpleMovingAverage(tmaStrategy.getTicker(), tmaStrategy.getSlowAvgIntervale());
             double fastSMAValue = simpleMovingAverage(tmaStrategy.getTicker(), tmaStrategy.getFastAvgIntervale());
 
@@ -74,23 +66,16 @@ public class EngineService {
                 tmaStrategy.setShortBelow(false);
                 strategyService.save(strategy);
                 return true;
-
             } else if(!tmaStrategy.getShortBelow() && (slowSMAValue < fastSMAValue)) {
                 tmaStrategy.setShortBelow(true);
                 strategyService.save(strategy);
                 return true;
             }
-
-            return false;
-
         }
-
         return false;
-
     }
 
     public double simpleMovingAverage(String ticker, int interval) {
-
         String url = "http://nyc31.conygre.com:31/Stock/getStockPriceList/" + ticker + "?howManyValues=" + interval;
         String response = requestData(url);
         JSONArray jsonArray = new JSONArray(response);
@@ -98,14 +83,11 @@ public class EngineService {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
             smaSum += Double.parseDouble(jsonObject.get("price").toString());
-
         }
-
         return smaSum/interval;
     }
 
     public String requestData(String urlString){
-
         //urlString = "http://nyc31.conygre.com:31/Stock/getStockPriceList/msft?howManyValues=100";
         String response = "";
         try {
@@ -151,7 +133,9 @@ public class EngineService {
             }
             in.close();
             con.disconnect();
-        } catch(Exception e){}
+        } catch(Exception e){
+
+        }
         return response;
     }
     */

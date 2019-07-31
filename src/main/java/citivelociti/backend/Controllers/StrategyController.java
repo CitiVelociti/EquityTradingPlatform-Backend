@@ -41,6 +41,16 @@ public class StrategyController {
         return strategyService.findAllByStatus(status);
     }
 
+    @GetMapping(value = "/startById/{id}")
+    public @ResponseBody Strategy startStrategyById(@PathVariable int id) {
+        return strategyService.startById(id);
+    }
+
+    @GetMapping(value = "/stopById/{id}")
+    public @ResponseBody Strategy stopStrategyById(@PathVariable int id) {
+        return strategyService.stopById(id);
+    }
+
     @PostMapping(value = "/create")
     public Strategy createStrategy(HttpServletRequest request, @RequestBody Map<String, String> payload) {
         String type = payload.get("type");
@@ -62,15 +72,4 @@ public class StrategyController {
         }
         return null;
     }
-
-    @GetMapping(value = "/startById/{id}")
-    public @ResponseBody Strategy startStrategyById(@PathVariable int id) {
-        return strategyService.startById(id);
-    }
-
-    @GetMapping(value = "/stopById/{id}")
-    public @ResponseBody Strategy stopStrategyById(@PathVariable int id) {
-        return strategyService.stopById(id);
-    }
-
 }
