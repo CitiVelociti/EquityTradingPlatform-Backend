@@ -45,10 +45,7 @@ public class StrategyController {
     }
 
     @PostMapping(value = "/create")
-    public Strategy createStrategy(HttpServletRequest request,@RequestBody Map<String, String> payload) {
-
-        System.out.println(payload);
-
+    public Strategy createStrategy(HttpServletRequest request, @RequestBody Map<String, String> payload) {
         String type = payload.get("type");
         String name = payload.get("name");
         String ticker = payload.get("ticker");
@@ -56,19 +53,16 @@ public class StrategyController {
         Double limit = Double.parseDouble(payload.get("limit"));
         Double stop = Double.parseDouble(payload.get("stop"));
 
-        if(type.equals("TMAStrategy")){
+        if(type.equals("TMAStrategy")) {
             Integer slowAvgIntervale = Integer.parseInt(payload.get("slowAvgIntervale"));
             Integer fastAvgIntervale = Integer.parseInt(payload.get("fastAvgIntervale"));
             TMAStrategy newTMA = new TMAStrategy(name, ticker, quantity, limit, stop, slowAvgIntervale, fastAvgIntervale);
             return strategyService.save(newTMA);
         } else if(type.equals("BBStrategy")) {
-
             Integer timeSpan = Integer.parseInt(request.getParameter("timeSpan"));
             BBStrategy newBB = new BBStrategy(name, ticker, quantity, limit, stop, timeSpan);
             return strategyService.save(newBB);
-
         }
-
         return null;
     }
 

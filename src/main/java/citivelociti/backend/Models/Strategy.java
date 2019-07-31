@@ -2,14 +2,8 @@ package citivelociti.backend.Models;
 
 import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.Status;
-import citivelociti.backend.Enums.StrategyType;
-import org.json.JSONArray;
 
 import javax.persistence.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 @Entity
 @Table(name = "strategy")
@@ -32,7 +26,9 @@ public abstract class Strategy implements IStrategy {
     @Enumerated
     private Position currentPosition;
 
-    public Strategy(){}
+    public Strategy() {
+        
+    }
 
     public Strategy(String name, String ticker, Double quantity, Double limit, Double stop) {
         this.name = name;
