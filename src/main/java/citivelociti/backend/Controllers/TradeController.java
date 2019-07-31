@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/trade")
 public class TradeController {
 
@@ -37,31 +38,6 @@ public class TradeController {
     @GetMapping(value = "/getAllByBuyOrSell/{buy}")
     public @ResponseBody List<Trade> getAllTradeByBuyOrSell(@PathVariable Boolean buy) {
         return tradeService.findAllByBuy(buy);
-    }
-
-    @PostMapping(value = "/create")
-    public Trade createStrategy(HttpServletRequest request, @RequestBody Map<String, String> payload) {
-
-        // int strategyId, boolean buy, double price
-
-        String type = payload.get("type");
-        String name = payload.get("name");
-        String ticker = payload.get("ticker");
-        Double quantity = Double.parseDouble(payload.get("quantity"));
-        Double limit = Double.parseDouble(payload.get("limit"));
-        Double stop = Double.parseDouble(payload.get("stop"));
-
-        // if(type.equals("TMAStrategy")) {
-        //     Integer slowAvgIntervale = Integer.parseInt(payload.get("slowAvgIntervale"));
-        //     Integer fastAvgIntervale = Integer.parseInt(payload.get("fastAvgIntervale"));
-        //     TMAStrategy newTMA = new TMAStrategy(name, ticker, quantity, limit, stop, slowAvgIntervale, fastAvgIntervale);
-        //     return strategyService.save(newTMA);
-        // } else if(type.equals("BBStrategy")) {
-        //     Integer timeSpan = Integer.parseInt(request.getParameter("timeSpan"));
-        //     BBStrategy newBB = new BBStrategy(name, ticker, quantity, limit, stop, timeSpan);
-        //     return strategyService.save(newBB);
-        // }
-        return null;
     }
 
     @GetMapping(value = "/getAllByOpenDateAsc")
@@ -89,4 +65,13 @@ public class TradeController {
         return tradeService.findAllByStatus(status);
     }
 
+    @PostMapping(value = "/create")
+    public Trade createStrategy(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+        int strategyId = Integer.parseInt(payload.get("strategyId"));
+        Boolean buy = Boolean.parseBoolean(payload.get("buy"));
+        Double price = Double.parseDouble(payload.get("price"));
+
+        Trade trade = new Trade(strategyId, buy, price);
+        return tradeService.save(trade);
+    }
 }

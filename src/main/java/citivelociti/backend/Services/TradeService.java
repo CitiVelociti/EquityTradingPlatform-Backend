@@ -13,8 +13,8 @@ public class TradeService {
     @Autowired
     TradeRepo tradeRepo;
 
-    public void save(Trade t) {
-        tradeRepo.save(t);
+    public Trade save(Trade t) {
+        return tradeRepo.save(t);
     }
 
     public Trade findById(int id) {

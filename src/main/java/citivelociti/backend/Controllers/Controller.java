@@ -32,6 +32,6 @@ public class Controller {
         strategyService.save(newBB);
         tradeService.save(t);
 
-        return "Added Dummy Strategies";
+        return "Hello World!";
     }
 }
