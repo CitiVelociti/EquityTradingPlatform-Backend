@@ -24,13 +24,18 @@ public class Controller {
 
     @RequestMapping("/")
     public String helloWorld(HttpServletResponse response) {
-        TMAStrategy newTMA = new TMAStrategy("My new Strat", "GOOG", 5.0, 5.0, 5.0, 1, 10);
 
-        BBStrategy newBB = new BBStrategy("My bollinger strat", "AAPL", 5.0, 5.0, 5.0, 2);
-        Strategy s = strategyService.save(newTMA);
-        Trade t = new Trade(s.getId(), true, 5);
-        strategyService.save(newBB);
-        tradeService.save(t);
+        for(int i = 0 ; i < 30; i++)
+        {
+            TMAStrategy newTMA = new TMAStrategy("Strategy: " + i, "GOOG", 5.0, 5.0, 5.0, 1, 10);
+            strategyService.save(newTMA);
+        }
+
+       // BBStrategy newBB = new BBStrategy("My bollinger strat", "AAPL", 5.0, 5.0, 5.0, 2);
+        //Strategy s = strategyService.save(newTMA);
+        //Trade t = new Trade(s.getId(), true, 5);
+       // strategyService.save(newBB);
+        //tradeService.save(t);
 
         return "Hello World!";
     }

@@ -65,13 +65,5 @@ public class TradeController {
         return tradeService.findAllByStatus(status);
     }
 
-    @PostMapping(value = "/create")
-    public Trade createStrategy(HttpServletRequest request, @RequestBody Map<String, String> payload) {
-        int strategyId = Integer.parseInt(payload.get("strategyId"));
-        Boolean buy = Boolean.parseBoolean(payload.get("buy"));
-        Double price = Double.parseDouble(payload.get("price"));
 
-        Trade trade = new Trade(strategyId, buy, price);
-        return tradeService.save(trade);
-    }
 }
