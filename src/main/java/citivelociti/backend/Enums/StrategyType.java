@@ -1,7 +1,7 @@
 package citivelociti.backend.Enums;
 
 public enum StrategyType {
-
-    TMAStrategy,BBStrategy
-
+    TMAStrategy,        // Two Moving Averages
+    BBStrategy,         // Bollinger Bands
+    PBStrategy          // Price Breakout
 }

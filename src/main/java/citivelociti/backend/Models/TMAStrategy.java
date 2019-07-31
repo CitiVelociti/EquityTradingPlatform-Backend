@@ -19,13 +19,13 @@ import javax.persistence.*;
 @Entity
 public class TMAStrategy extends Strategy {
 
-
-
     private Integer slowAvgIntervale;
     private Integer fastAvgIntervale;
     private Boolean shortBelow;
 
-    public TMAStrategy(){}
+    public TMAStrategy() {
+
+    }
 
     public TMAStrategy(String name, String ticker, Double quantity, Double limit, Double stop, Integer slowAvgIntervale, Integer fastAvgIntervale) {
         super(name, ticker, quantity, limit, stop);

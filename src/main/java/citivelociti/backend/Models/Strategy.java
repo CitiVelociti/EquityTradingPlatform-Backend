@@ -21,13 +21,13 @@ public abstract class Strategy implements IStrategy {
     private Status status;
     private String ticker;
     private Double quantity;
-    private Double limits;
-    private Double stop;
+    private Double limits;      // Percentage to exit a strategy - profit
+    private Double stop;        // Percentage to exit a strategy - loss
     @Enumerated
     private Position currentPosition;
 
     public Strategy() {
-        
+        this.stop = 10;
     }
 
     public Strategy(String name, String ticker, Double quantity, Double limit, Double stop) {
@@ -111,8 +111,5 @@ public abstract class Strategy implements IStrategy {
     public void setCurrentPosition(Position currentPosition) {
         this.currentPosition = currentPosition;
     }
-
-
-
     
 }

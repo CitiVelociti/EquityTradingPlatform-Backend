@@ -39,9 +39,6 @@ public class StrategyService {
         return strategyRepo.findAll();
     }
 
-    /*
-     * If the status is paused, then pause it? do you mean active instead?
-     */
     public Strategy startById(int id) {
         Strategy strategy = strategyRepo.findById(id);
         if (strategy.getStatus() == Status.PAUSED) {

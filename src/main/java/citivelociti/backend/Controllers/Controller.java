@@ -25,8 +25,7 @@ public class Controller {
     @RequestMapping("/")
     public String helloWorld(HttpServletResponse response) {
 
-        for(int i = 0 ; i < 30; i++)
-        {
+        for(int i = 0 ; i < 30; i++) {
             TMAStrategy newTMA = new TMAStrategy("Strategy: " + i, "GOOG", 5.0, 5.0, 5.0, 1, 10);
             strategyService.save(newTMA);
         }
@@ -39,4 +38,5 @@ public class Controller {
 
         return "Hello World!";
     }
+    
 }

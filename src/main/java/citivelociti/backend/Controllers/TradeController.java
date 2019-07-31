@@ -64,6 +64,5 @@ public class TradeController {
     public @ResponseBody List<Trade> getAllTradesByStatus(@PathVariable TradeStatus status) {
         return tradeService.findAllByStatus(status);
     }
-
-
+    
 }

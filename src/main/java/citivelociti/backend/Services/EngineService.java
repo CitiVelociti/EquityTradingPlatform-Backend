@@ -28,7 +28,6 @@ import org.springframework.jms.core.MessageCreator;
 @Service
 public class EngineService {
 
-
     @Autowired
     StrategyService strategyService;
 
@@ -37,7 +36,6 @@ public class EngineService {
 
     @Autowired
     private JmsTemplate jmsTemplate;
-
 
     private List<Strategy> activeStrategies;
 
@@ -48,8 +46,6 @@ public class EngineService {
 
         activeStrategies.parallelStream().forEach((strategy)->{
             Boolean signal = calculate(strategy);
-
-
             if(signal && strategy.getCurrentPosition() == Position.CLOSED) {
                 System.out.println("OPEN THE POSITION");
                 strategy.setCurrentPosition(Position.OPEN);
@@ -77,15 +73,15 @@ public class EngineService {
             System.out.println("Fast SMA: " + fastSMAValue);
 
             //Initialize strategy shortBelowOrAbove
-            if(tmaStrategy.getShortBelow() == null && slowSMAValue < fastSMAValue){
+            if(tmaStrategy.getShortBelow() == null && slowSMAValue < fastSMAValue) {
                 tmaStrategy.setShortBelow(true);
                 strategyService.save(strategy);
-            } else if(tmaStrategy.getShortBelow() == null && slowSMAValue > fastSMAValue){
+            } else if(tmaStrategy.getShortBelow() == null && slowSMAValue > fastSMAValue) {
                 tmaStrategy.setShortBelow(false);
                 strategyService.save(strategy);
             }
 
-            if(tmaStrategy.getShortBelow() && (slowSMAValue > fastSMAValue)){
+            if(tmaStrategy.getShortBelow() && (slowSMAValue > fastSMAValue)) {
                 tmaStrategy.setShortBelow(false);
                 strategyService.save(strategy);
                 System.out.println("Signal: true");
@@ -100,9 +96,7 @@ public class EngineService {
                 //sendMessageToBroker();
                 return true;
             }
-
         }
-
         System.out.println("Signal: false");
         return false;
     }
@@ -119,17 +113,18 @@ public class EngineService {
         return smaSum/interval;
     }
 
-    public Object getCurrentMarketData(String ticker, String dataField){
+    public Object getCurrentMarketData(String ticker, String dataField) {
         String response = requestData("http://nyc31.conygre.com:31/Stock/getStockPrice/" + ticker);
         JSONObject jsonObject = new JSONObject(response);
-        if(dataField.equals("price")){
+        if(dataField.equals("price")) {
             return Double.parseDouble(jsonObject.get("price").toString());
-        } else if(dataField.equals("time")){
+        } else if(dataField.equals("time")) {
             return jsonObject.get("theTime").toString();
         }
         return null;
     }
-    public String requestData(String urlString){
+
+    public String requestData(String urlString) {
         //urlString = "http://nyc31.conygre.com:31/Stock/getStockPriceList/msft?howManyValues=100";
         String response = "";
         try {
@@ -146,16 +141,15 @@ public class EngineService {
             }
             in.close();
             con.disconnect();
-        } catch(Exception e){}
+        } catch(Exception e) {
+
+        }
         return response;
     }
 
-
-
-        public void sendMessageToBroker(int tradeId, boolean buy, double price, int size, String stock, String whenAsDate){
+    public void sendMessageToBroker(int tradeId, boolean buy, double price, int size, String stock, String whenAsDate) {
         int correlationID = tradeId;
         MessageCreator messageCreator = new MessageCreator() {
-
             @Override
             public Message createMessage(Session session) throws JMSException {
                 MapMessage message = session.createMapMessage();
@@ -169,10 +163,7 @@ public class EngineService {
                 return message;
             }
         };
-        //System.out.println("Sending a new message.");
         jmsTemplate.send("OrderBroker_Reply", messageCreator);
-
-
     }
     /*
     @Scheduled(fixedRate=1000)

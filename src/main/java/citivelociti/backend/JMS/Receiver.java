@@ -19,7 +19,6 @@ import javax.jms.Message;
 @Component
 public class Receiver {
 
-
     @Autowired
     TradeService tradeService;
 
@@ -40,9 +39,6 @@ public class Receiver {
                 tradeService.save(trade);
             }
             mapMessage.getString("result");
-
-
-
             FileSystemUtils.deleteRecursively(new File("activemq-data"));
         } catch (Exception e) {
 

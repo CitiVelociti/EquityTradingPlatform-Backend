@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class OrderTransaction implements Serializable {
 
-
     private boolean buy;
     private int id;
     private double price;
@@ -13,6 +12,7 @@ public class OrderTransaction implements Serializable {
     private String whenAsDate;
 
     public OrderTransaction() {
+
     }
 
     public OrderTransaction(boolean buy, int id, double price, int size, String stock, String whenAsDate) {

@@ -15,7 +15,9 @@ public class BBStrategy extends Strategy {
     private Integer timeSpan;   // In seconds
     private Integer std;
 
-    public BBStrategy(){}
+    public BBStrategy(){
+
+    }
 
     /*
      * The default std is typically 2. If the user does not specify the std, we will default it to 2.
@@ -47,6 +49,5 @@ public class BBStrategy extends Strategy {
     public void setStd(Integer std) {
         this.std = std;
     }
-
 }
 
