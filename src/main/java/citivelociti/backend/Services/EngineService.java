@@ -4,6 +4,7 @@ import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Models.OrderTransaction;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
+import citivelociti.backend.Models.Trade;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,7 +18,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.UUID;
 import javax.jms.JMSException;
+import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.Session;
 import org.springframework.jms.core.MessageCreator;
@@ -30,7 +33,11 @@ public class EngineService {
     StrategyService strategyService;
 
     @Autowired
+    TradeService tradeService;
+
+    @Autowired
     private JmsTemplate jmsTemplate;
+
 
     private List<Strategy> activeStrategies;
 
@@ -59,12 +66,15 @@ public class EngineService {
     public Boolean calculate(Strategy strategy) {
         if(strategy.getType().equals("TMAStrategy")) {
             TMAStrategy tmaStrategy = (TMAStrategy)strategy;
-            double slowSMAValue = simpleMovingAverage(tmaStrategy.getTicker(), tmaStrategy.getSlowAvgIntervale());
-            double fastSMAValue = simpleMovingAverage(tmaStrategy.getTicker(), tmaStrategy.getFastAvgIntervale());
+            String ticker = tmaStrategy.getTicker();
+            double currentPrice = (double)getCurrentMarketData(ticker, "price");
+            String currentTime = (String)getCurrentMarketData(ticker, "time");
+            System.out.println("current price: " + currentPrice);
+            double slowSMAValue = simpleMovingAverage(ticker, tmaStrategy.getSlowAvgIntervale());
+            double fastSMAValue = simpleMovingAverage(ticker, tmaStrategy.getFastAvgIntervale());
             System.out.println("Checking Strategy " + strategy.getName() + ":");
             System.out.println("Slow SMA: " + slowSMAValue);
             System.out.println("Fast SMA: " + fastSMAValue);
-            sendMessage();
 
             //Initialize strategy shortBelowOrAbove
             if(tmaStrategy.getShortBelow() == null && slowSMAValue < fastSMAValue){
@@ -79,15 +89,20 @@ public class EngineService {
                 tmaStrategy.setShortBelow(false);
                 strategyService.save(strategy);
                 System.out.println("Signal: true");
+                Trade trade = new Trade(strategy.getId(), true, currentPrice);
+                trade = tradeService.save(trade);
+                sendMessageToBroker(trade.getId(), true, currentPrice, (int)strategy.getQuantity().doubleValue(), ticker, currentTime);
                 return true;
             } else if(!tmaStrategy.getShortBelow() && (slowSMAValue < fastSMAValue)) {
                 tmaStrategy.setShortBelow(true);
                 strategyService.save(strategy);
                 System.out.println("Signal: true");
+                //sendMessageToBroker();
                 return true;
             }
 
         }
+
         System.out.println("Signal: false");
         return false;
     }
@@ -104,6 +119,16 @@ public class EngineService {
         return smaSum/interval;
     }
 
+    public Object getCurrentMarketData(String ticker, String dataField){
+        String response = requestData("http://nyc31.conygre.com:31/Stock/getStockPrice/" + ticker);
+        JSONObject jsonObject = new JSONObject(response);
+        if(dataField.equals("price")){
+            return Double.parseDouble(jsonObject.get("price").toString());
+        } else if(dataField.equals("time")){
+            return jsonObject.get("theTime").toString();
+        }
+        return null;
+    }
     public String requestData(String urlString){
         //urlString = "http://nyc31.conygre.com:31/Stock/getStockPriceList/msft?howManyValues=100";
         String response = "";
@@ -127,15 +152,26 @@ public class EngineService {
 
 
 
-        public void sendMessage(){
+        public void sendMessageToBroker(int tradeId, boolean buy, double price, int size, String stock, String whenAsDate){
+        int correlationID = tradeId;
         MessageCreator messageCreator = new MessageCreator() {
+
             @Override
             public Message createMessage(Session session) throws JMSException {
-                return session.createObjectMessage(new OrderTransaction(true, 2, 2.0,2,"ap","date"));
+                MapMessage message = session.createMapMessage();
+                message.setBoolean("buy",buy);
+                //message.setInt("id", id);
+                message.setDouble("price",price);
+                message.setInt("size",size);
+                message.setString("stock", stock);
+                message.setString("whenAsDate", whenAsDate);
+                message.setJMSCorrelationID(correlationID + "");
+                return message;
             }
         };
         //System.out.println("Sending a new message.");
-        jmsTemplate.send("brokerReplyListener", messageCreator);
+        jmsTemplate.send("OrderBroker_Reply", messageCreator);
+
 
     }
     /*
