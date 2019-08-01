@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/order")
+@RequestMapping("/orders")
 public class OrderController {
 
     @Autowired
@@ -19,7 +19,7 @@ public class OrderController {
 
     @GetMapping(value = "/getById/{id}")
     public @ResponseBody
-    Order getAllOrderById(@PathVariable int id) {
+    Order getAllOrdersById(@PathVariable int id) {
         return orderService.findById(id);
     }
 
@@ -38,7 +38,7 @@ public class OrderController {
         return orderService.findAllByBuy(buy);
     }
 
-    @GetMapping(value = "/getAllByDateAsc")
+    @GetMapping(value = "/getAllByOpenDateAsc")
     public @ResponseBody List<Order> findAllByOrderByDateAsc() {
         return orderService.findAllByOrderByDateAsc();
     }
