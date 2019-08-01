@@ -4,7 +4,11 @@ import java.io.File;
 import java.util.Calendar;
 
 import citivelociti.backend.Enums.Position;
+<<<<<<< HEAD
+import citivelociti.backend.Enums.OrderStatus;
+=======
 import citivelociti.backend.Enums.TradeStatus;
+>>>>>>> master
 import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Services.OrderService;
@@ -30,7 +34,7 @@ public class Receiver {
     public void receiveMessage(Message message) {
         try {
             MapMessage mapMessage = (MapMessage)message;
-            System.out.println("======= TRADE MESSAGE RECEIVED ========");
+            System.out.println("======= Order MESSAGE RECEIVED ========");
             System.out.println(mapMessage.getString("buy"));
             System.out.println(mapMessage.getString("price"));
             System.out.println(mapMessage.getString("stock"));
@@ -41,7 +45,11 @@ public class Receiver {
            // if(result.equals("FILLED")){
             if(mapMessage.getBoolean("buy")){
                 Order order = orderService.findById(Integer.parseInt(mapMessage.getJMSCorrelationID()));
+<<<<<<< HEAD
+                order.setStatus(OrderStatus.FILLED);
+=======
                 order.setStatus(TradeStatus.FILLED);
+>>>>>>> master
                 orderService.save(order);
 
                 Strategy strategy = strategyService.findById(order.getStrategyId());
@@ -54,12 +62,19 @@ public class Receiver {
                     strategy.setCurrentPosition(Position.CLOSED);
                     strategyService.save(strategy);
                 }*/
+<<<<<<< HEAD
+=======
 
+>>>>>>> master
             } else if (!mapMessage.getBoolean("buy")){
                 Order order = orderService.findById(Integer.parseInt(mapMessage.getJMSCorrelationID()));
                 order.setPrice(mapMessage.getDouble("price"));
                 order.setDate(Calendar.getInstance().getTime());
+<<<<<<< HEAD
+                order.setStatus(OrderStatus.FILLED);
+=======
                 order.setStatus(TradeStatus.FILLED);
+>>>>>>> master
                 orderService.save(order);
             }
             mapMessage.getString("result");

@@ -1,5 +1,5 @@
 package citivelociti.backend.Models;
 
-public interface ITrade {
+public interface IOrder {
     
 }
