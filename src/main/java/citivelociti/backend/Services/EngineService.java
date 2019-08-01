@@ -40,10 +40,9 @@ public class EngineService {
 
     private List<Strategy> activeStrategies;
 
-    @Scheduled(fixedRate =1000)
+    @Scheduled(fixedRate =100)
     public void checkLimits(){
         List<Strategy> strategies = strategyService.findAll();
-        System.out.println(strategies);
         strategies.parallelStream().forEach((strategy) -> {
             if(strategy.getTotalPnlPercent()<= -10.0){
                 strategy.setStatus(Status.EXITED);
@@ -60,6 +59,7 @@ public class EngineService {
         activeStrategies = strategyService.findAllByStatus(Status.ACTIVE);
         activeStrategies.parallelStream().forEach((strategy)->{
             //long start = System.currentTimeMillis();
+            System.out.println("Running Strategies... ");
             calculate(strategy);
            // long elapsed = System.currentTimeMillis() - start;
            // System.out.println(elapsed);
@@ -75,7 +75,6 @@ public class EngineService {
             String currentTime = (String)getCurrentMarketData(ticker, "time");
             double slowSMAValue = simpleMovingAverage(ticker, tmaStrategy.getSlowAvgIntervale());
             double fastSMAValue = simpleMovingAverage(ticker, tmaStrategy.getFastAvgIntervale());
-            System.out.println("Running Strategies... ");
 
             //Initialize strategy shortBelowOrAbove
             if(tmaStrategy.getShortBelow() == null && slowSMAValue < fastSMAValue) {
