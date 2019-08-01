@@ -25,13 +25,15 @@ public abstract class Strategy implements IStrategy {
     private Double stop;        // Percentage to exit a strategy - loss
     @Enumerated
     private Position currentPosition;
-    private double totalPnl;
+    private Double totalPnl;
+    private Double totalPnlPercent;
+    private Double initialCapital;
 
     public Strategy() {
         this.stop = 10.0;
     }
 
-    public Strategy(String name, String ticker, Double quantity, Double limit, Double stop) {
+    public Strategy(Double initialCapital, String name, String ticker, Double quantity, Double limit, Double stop) {
         this.name = name;
         this.currentPosition = Position.CLOSED;
         this.status = Status.ACTIVE;
@@ -39,14 +41,36 @@ public abstract class Strategy implements IStrategy {
         this.quantity = quantity;
         this.limits = limit;
         this.stop = stop;
-        this.totalPnl = 0;
+        this.totalPnl = 0.0;
+        this.totalPnlPercent = 0.0;
+        this.initialCapital = initialCapital;
     }
 
     public void addPnl(Double pnl){
         totalPnl+=pnl;
     }
-    public double getTotalPnl() {
+    public Double getTotalPnl() {
         return totalPnl;
+    }
+
+    public void setTotalPnl(Double totalPnl) {
+        this.totalPnl = totalPnl;
+    }
+
+    public Double getTotalPnlPercent() {
+        return totalPnlPercent;
+    }
+
+    public void setTotalPnlPercent(Double totalPnlPercent) {
+        this.totalPnlPercent = totalPnlPercent;
+    }
+
+    public Double getInitialCapital() {
+        return initialCapital;
+    }
+
+    public void setInitialCapital(Double initialCapital) {
+        this.initialCapital = initialCapital;
     }
 
     public void setTotalPnl(double totalPnl) {
