@@ -1,11 +1,8 @@
 package citivelociti.backend.Controllers;
 
-import citivelociti.backend.Models.BBStrategy;
-import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
-import citivelociti.backend.Models.Trade;
 import citivelociti.backend.Services.StrategyService;
-import citivelociti.backend.Services.TradeService;
+import citivelociti.backend.Services.OrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +17,7 @@ public class Controller {
     StrategyService strategyService;
 
     @Autowired
-    TradeService tradeService;
+    OrderService orderService;
 
     @RequestMapping("/")
     public String helloWorld(HttpServletResponse response) {
@@ -32,7 +29,7 @@ public class Controller {
 
        // BBStrategy newBB = new BBStrategy("My bollinger strat", "AAPL", 5.0, 5.0, 5.0, 2);
         //Strategy s = strategyService.save(newTMA);
-        //Trade t = new Trade(s.getId(), true, 5);
+        //Order t = new Order(s.getId(), true, 5);
        // strategyService.save(newBB);
         //tradeService.save(t);
 

@@ -1,10 +1,9 @@
 package citivelociti.backend.Services;
 
 import citivelociti.backend.Enums.Position;
-import citivelociti.backend.Models.OrderTransaction;
+import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
-import citivelociti.backend.Models.Trade;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,7 +17,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-import java.util.UUID;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -32,7 +30,7 @@ public class EngineService {
     StrategyService strategyService;
 
     @Autowired
-    TradeService tradeService;
+    OrderService orderService;
 
     @Autowired
     private JmsTemplate jmsTemplate;
@@ -44,8 +42,10 @@ public class EngineService {
         //Eventually we want to fetch all types of strategies
         activeStrategies = strategyService.findAllByType("TMAStrategy");
 
+        System.out.println(activeStrategies);
         activeStrategies.parallelStream().forEach((strategy)->{
             Boolean signal = calculate(strategy);
+            /*
             if(signal && strategy.getCurrentPosition() == Position.CLOSED) {
                 System.out.println("OPEN THE POSITION");
                 strategy.setCurrentPosition(Position.OPEN);
@@ -55,6 +55,7 @@ public class EngineService {
                 strategy.setCurrentPosition(Position.CLOSED);
                 strategyService.save(strategy);
             }
+            */
         });
     }
 
@@ -75,24 +76,40 @@ public class EngineService {
             //Initialize strategy shortBelowOrAbove
             if(tmaStrategy.getShortBelow() == null && slowSMAValue < fastSMAValue) {
                 tmaStrategy.setShortBelow(true);
-                strategyService.save(strategy);
+                strategyService.save(tmaStrategy);
             } else if(tmaStrategy.getShortBelow() == null && slowSMAValue > fastSMAValue) {
                 tmaStrategy.setShortBelow(false);
-                strategyService.save(strategy);
+                strategyService.save(tmaStrategy);
             }
 
             if(tmaStrategy.getShortBelow() && (slowSMAValue > fastSMAValue)) {
                 tmaStrategy.setShortBelow(false);
-                strategyService.save(strategy);
+                strategy = strategyService.save(tmaStrategy);
                 System.out.println("Signal: true");
-                Trade trade = new Trade(strategy.getId(), true, currentPrice);
-                trade = tradeService.save(trade);
-                sendMessageToBroker(trade.getId(), true, currentPrice, (int)strategy.getQuantity().doubleValue(), ticker, currentTime);
+
+
+                //Make the order on our end
+                if(strategy.getCurrentPosition() == Position.CLOSED) {
+                    Order order = new Order(strategy.getId(), true, currentPrice);
+                    order = orderService.save(order);
+                    //Send message to broker and let it fill
+                    sendMessageToBroker(order.getId(), true, currentPrice, (int) strategy.getQuantity().doubleValue(), ticker, currentTime);
+                    strategy.setCurrentPosition(Position.OPEN);
+                    strategyService.save(strategy);
+                }
+
                 return true;
             } else if(!tmaStrategy.getShortBelow() && (slowSMAValue < fastSMAValue)) {
                 tmaStrategy.setShortBelow(true);
-                strategyService.save(strategy);
-                System.out.println("Signal: true");
+                strategyService.save(tmaStrategy);
+
+                if(strategy.getCurrentPosition() == Position.OPEN) {
+                    Order order = new Order(strategy.getId(), false, currentPrice);
+                    order = orderService.save(order);
+                    sendMessageToBroker(order.getId(), false, currentPrice, (int) strategy.getQuantity().doubleValue(), ticker, currentTime);
+                    strategy.setCurrentPosition(Position.CLOSED);
+                    strategyService.save(strategy);
+                }
                 //sendMessageToBroker();
                 return true;
             }
@@ -125,7 +142,6 @@ public class EngineService {
     }
 
     public String requestData(String urlString) {
-        //urlString = "http://nyc31.conygre.com:31/Stock/getStockPriceList/msft?howManyValues=100";
         String response = "";
         try {
             URL url = new URL(urlString);
