@@ -33,7 +33,7 @@ public class Receiver {
             System.out.println(mapMessage.getString("whenAsDate"));
             System.out.println(mapMessage.getJMSCorrelationID());
             String result = mapMessage.getString("result");
-            if(result.equals("FILLED")){
+            if(result.equals("FILLED")) {
                 Trade trade = tradeService.findById(Integer.parseInt(mapMessage.getJMSCorrelationID()));
                 trade.setStatus(TradeStatus.FILLED);
                 tradeService.save(trade);
