@@ -22,11 +22,9 @@ public interface OrderRepo extends JpaRepository<Order, Integer> {
     // Returns a list of all buys or sells depending on the parameter.
     public List<Order> findAllByBuy(Boolean buy);
 
-
     public List<Order> findAllByOrderByDateAsc();
 
     public List<Order> findAllByOrderByDateDesc();
-
 
     // Returns a list of all the trades of a specific status
     public List<Order> findAllByStatus(OrderStatus status);

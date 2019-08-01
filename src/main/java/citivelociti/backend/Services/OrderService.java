@@ -66,21 +66,21 @@ public class OrderService {
      * @parameter id    The id of the trade which will determine the pnl
      * @return          
      */
-    // public Double getProfitById(int id) {
-    //     Order order = orderRepo.findById(id);
-    //     if(order == null) {
-    //         return null;
-    //     } else if (order.getStatus() == OrderStatus.FILLED) {
-    //         try {
-    //             Order recentOrder = orderRepo.findAllByOrderStrategyIdByDateDesc(order.getStrategyId()).get(0);
-    //             return (order.getPrice() - recentOrder.getPrice()) * strategyRepo.findAllById(order.getStrategyId()).getQuantity();
-    //         } catch(Exception ex) {
-    //             // Need to change the exception later.
-    //             // Exception should be when tradeRepo.findAllByOrderByDateDesc() returns null or get(0) is not valid
-    //         }
-    //     }
-    //     return null;
-    // }
+    public Double getProfitById(int id) {
+        Order order = orderRepo.findById(id);
+        if(order == null) {
+            return null;
+        } else if (order.getStatus() == OrderStatus.FILLED) {
+            try {
+                Order recentOrder = orderRepo.findAllByOrderStrategyIdByDateDesc(order.getStrategyId()).get(0);
+                return (order.getPrice() - recentOrder.getPrice()) * strategyRepo.findAllById(order.getStrategyId()).getQuantity();
+            } catch(Exception ex) {
+                // Need to change the exception later.
+                // Exception should be when tradeRepo.findAllByOrderByDateDesc() returns null or get(0) is not valid
+            }
+        }
+        return null;
+    }
 
 }
 
