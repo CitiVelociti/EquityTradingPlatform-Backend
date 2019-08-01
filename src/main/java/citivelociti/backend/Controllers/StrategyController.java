@@ -36,6 +36,17 @@ public class StrategyController {
         return strategyService.findAllByType(type);
     }
 
+    @GetMapping(value = "/pauseAll")
+    public @ResponseBody List<Strategy> pauseAll(){
+        List<Strategy> strats = strategyService.findAll();
+        for(Strategy strat : strats){
+            strat.setStatus(Status.PAUSED);
+            strategyService.save(strat);
+        }
+        return strategyService.findAll();
+
+    }
+
     @GetMapping(value = "/getAllByStatus/{status}")
     public @ResponseBody List<Strategy> getAllStrategiesByStatus(@PathVariable Status status) {
         return strategyService.findAllByStatus(status);

@@ -1,8 +1,6 @@
 package citivelociti.backend.JMS;
 
-import citivelociti.backend.Enums.OrderStatus;
-import citivelociti.backend.Models.Order;
-import citivelociti.backend.Models.Strategy;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
