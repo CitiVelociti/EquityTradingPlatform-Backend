@@ -1,9 +1,10 @@
 package citivelociti.backend.Services;
 
 import citivelociti.backend.Models.Order;
+import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Repositories.StrategyRepo;
 import citivelociti.backend.Repositories.OrderRepo;
-import citivelociti.backend.Enums.TradeStatus;
+import citivelociti.backend.Enums.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,10 @@ public class OrderService {
         return orderRepo.findAllByStrategyId(strategyId);
     }
 
+    public List<Order> findAllByStrategyIdOrderByDateDesc(Integer strategyId) {
+        return findAllByStrategyIdOrderByDateDesc(strategyId);
+    }
+
     public List<Order> findAllByBuy(Boolean buy) {
         return orderRepo.findAllByBuy(buy);
     }
@@ -46,17 +51,12 @@ public class OrderService {
     }
 
 
-    public List<Order> findAllByStatus(TradeStatus status) {
+    public List<Order> findAllByStatus(OrderStatus status) {
         return orderRepo.findAllByStatus(status);
     }
 
     public List<Order> findAll() {
         return orderRepo.findAll();
-    }
-    /*
-    
-    public Double getProfit(Order order) {
-        return (order.getClosePrice() - order.getOpenPrice()) * strategyRepo.findById((int) order.getId()).getQuantity();
     }
 
     /*
@@ -67,25 +67,25 @@ public class OrderService {
      * @parameter id    The id of the trade which will determine the pnl
      * @return          
      */
-    /*
     public Double getProfitById(int id) {
-        Order order = tradeRepo.findById(id);
+        Order order = orderRepo.findById(id);
         if(order == null) {
             return null;
-        } else if (order.getCloseDate() != null && order.getStatus() == TradeStatus.OPEN) {
-            return getProfit(order);
-        }
+        } else if (order.getStatus() == OrderStatus.FILLED) {
+            try {
+                Order recentOrder = orderRepo.findAllByStrategyIdOrderByDateDesc(order.getStrategyId()).get(1);
 
-        // order has not been closed. Find the previous closed order and get that value.
-        try {
-            return getProfit(tradeRepo.findAllByOrderByCloseDateDesc().get(0));
-        } catch(Exception ex) {
-            // Need to change the exception later.
-            // Exception should be when tradeRepo.findAllByOrderByCloseDateDesc() returns null or get(0) is not valid
-            return null;
+                System.out.println("TRADE COMPLETED BETWNEEN:");
+                System.out.println("Prev price:" + recentOrder.getPrice());
+                System.out.println("Price now: " + order.getPrice());
+                return (order.getPrice() - recentOrder.getPrice()) * strategyRepo.findById(order.getStrategyId()).get().getQuantity();
+            } catch(Exception ex) {
+                // Need to change the exception later.
+                // Exception should be when tradeRepo.findAllByOrderByDateDesc() returns null or get(0) is not valid
+            }
         }
+        return null;
     }
-    */
 
 }
 

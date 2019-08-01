@@ -31,7 +31,7 @@ public class Controller {
         //Strategy s = strategyService.save(newTMA);
         //Order t = new Order(s.getId(), true, 5);
        // strategyService.save(newBB);
-        //tradeService.save(t);
+        //orderService.save(t);
 
         return "Hello World!";
     }

@@ -1,7 +1,7 @@
 package citivelociti.backend.Services;
 
 import citivelociti.backend.Enums.Position;
-import citivelociti.backend.Enums.TradeStatus;
+import citivelociti.backend.Enums.OrderStatus;
 import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
@@ -43,21 +43,8 @@ public class EngineService {
     public void readFeed() {
         //Eventually we want to fetch all types of strategies
         activeStrategies = strategyService.findAllByType("TMAStrategy");
-
-        System.out.println(activeStrategies);
         activeStrategies.parallelStream().forEach((strategy)->{
-            Boolean signal = calculate(strategy);
-            /*
-            if(signal && strategy.getCurrentPosition() == Position.CLOSED) {
-                System.out.println("OPEN THE POSITION");
-                strategy.setCurrentPosition(Position.OPEN);
-                strategyService.save(strategy);
-            } else if(signal && strategy.getCurrentPosition() == Position.OPEN) {
-                System.out.println("CLOSE THE POSITION");
-                strategy.setCurrentPosition(Position.CLOSED);
-                strategyService.save(strategy);
-            }
-            */
+            calculate(strategy);
         });
     }
 
@@ -68,12 +55,9 @@ public class EngineService {
             String ticker = tmaStrategy.getTicker();
             double currentPrice = (double)getCurrentMarketData(ticker, "price");
             String currentTime = (String)getCurrentMarketData(ticker, "time");
-            System.out.println("current price: " + currentPrice);
             double slowSMAValue = simpleMovingAverage(ticker, tmaStrategy.getSlowAvgIntervale());
             double fastSMAValue = simpleMovingAverage(ticker, tmaStrategy.getFastAvgIntervale());
-            System.out.println("Checking Strategy " + strategy.getName() + ":");
-            System.out.println("Slow SMA: " + slowSMAValue);
-            System.out.println("Fast SMA: " + fastSMAValue);
+            System.out.println("Running Strategies... ");
 
             //Initialize strategy shortBelowOrAbove
             if(tmaStrategy.getShortBelow() == null && slowSMAValue < fastSMAValue) {
@@ -83,13 +67,10 @@ public class EngineService {
                 tmaStrategy.setShortBelow(false);
                 strategyService.save(tmaStrategy);
             }
-
             if(tmaStrategy.getShortBelow() && (slowSMAValue > fastSMAValue)) {
                 tmaStrategy.setShortBelow(false);
                 strategy = strategyService.save(tmaStrategy);
-                System.out.println("Signal: true");
-
-
+                System.out.println("Crossover on: + " + strategy.getName());
                 //Make the order on our end
                 if(strategy.getCurrentPosition() == Position.CLOSED) {
                     Order order = new Order(strategy.getId(), true, currentPrice);
@@ -98,12 +79,10 @@ public class EngineService {
                     strategy.setCurrentPosition(Position.OPEN);
                     strategyService.save(strategy);
                 }
-
                 return true;
             } else if(!tmaStrategy.getShortBelow() && (slowSMAValue < fastSMAValue)) {
                 tmaStrategy.setShortBelow(true);
                 strategyService.save(tmaStrategy);
-
                 if(strategy.getCurrentPosition() == Position.OPEN) {
                     Order order = new Order(strategy.getId(), false, currentPrice);
                     order = orderService.save(order);
@@ -115,7 +94,6 @@ public class EngineService {
                 return true;
             }
         }
-        System.out.println("Signal: false");
         return false;
     }
 
@@ -182,18 +160,6 @@ public class EngineService {
         };
         jmsTemplate.send("OrderBroker", messageCreator);
 
-        if(buy){
-            Order order = orderService.findById(correlationID);
-            order.setStatus(TradeStatus.UNFILLED);
-            orderService.save(order);
-           // Strategy strategy = strategyService.findById(order.getStrategyId());
-        } else if (!buy){
-            Order order = orderService.findById(correlationID);
-            order.setPrice(price);
-            order.setDate(Calendar.getInstance().getTime());
-            order.setStatus(TradeStatus.UNFILLED);
-            orderService.save(order);
-        }
     }
     /*
     @Scheduled(fixedRate=1000)

@@ -1,6 +1,6 @@
 package citivelociti.backend.Models;
 
-import citivelociti.backend.Enums.TradeStatus;
+import citivelociti.backend.Enums.OrderStatus;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "orders")
-public class Order implements ITrade {
+public class Order implements IOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,7 +27,7 @@ public class Order implements ITrade {
     private Date closeDate;         // Date which the strategy ended
     */
     @Enumerated
-    private TradeStatus status;     // OPEN, FILLED, REJECTED
+    private OrderStatus status;     // OPEN, FILLED, REJECTED
 
     public Order() {
         
@@ -38,7 +38,7 @@ public class Order implements ITrade {
         this.buy = buy;
         this.price = price;
         this.date = Calendar.getInstance().getTime();
-        this.status = TradeStatus.UNFILLED;
+        this.status = OrderStatus.UNFILLED;
     }
 
     public Double getPnl() {
@@ -89,11 +89,11 @@ public class Order implements ITrade {
         this.date = date;
     }
 
-    public TradeStatus getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(TradeStatus status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

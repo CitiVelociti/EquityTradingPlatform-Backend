@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Calendar;
 
 import citivelociti.backend.Enums.Position;
-import citivelociti.backend.Enums.TradeStatus;
+import citivelociti.backend.Enums.OrderStatus;
 import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Services.OrderService;
@@ -30,23 +30,32 @@ public class OrderListener {
     public void receiveMessage(Message message) {
         try {
             MapMessage mapMessage = (MapMessage)message;
+
             System.out.println("======= BROKER REPLY RECEIVED ========");
             System.out.println(mapMessage.getString("result"));
+
             //PUT THIS BACK IN LATER WHEN GET MOCKED RESPONSE FROM BROKER
            // if(result.equals("FILLED")){
             if(mapMessage.getString("result").equals("FILLED")){
                 Order order = orderService.findById(Integer.parseInt(mapMessage.getJMSCorrelationID()));
-                order.setStatus(TradeStatus.FILLED);
+                order.setStatus(OrderStatus.FILLED);
                 orderService.save(order);
                 Strategy strategy = strategyService.findById(order.getStrategyId());
+                if(!order.getBuy()){
+
+                    //TRADE CLOSED
+                    order.setPnl(orderService.getProfitById(order.getId()));
+                    orderService.save(order);
+                }
 
             } else if (!mapMessage.getString("result").equals("REJECTED")){
                 Order order = orderService.findById(Integer.parseInt(mapMessage.getJMSCorrelationID()));
                 order.setPrice(mapMessage.getDouble("price"));
                 order.setDate(Calendar.getInstance().getTime());
-                order.setStatus(TradeStatus.REJECTED);
+                order.setStatus(OrderStatus.REJECTED);
                 orderService.save(order);
             }
+
             mapMessage.getString("result");
             FileSystemUtils.deleteRecursively(new File("activemq-data"));
         } catch (Exception e) {

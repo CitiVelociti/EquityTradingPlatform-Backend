@@ -72,5 +72,12 @@ public class StrategyController {
         }
         return null;
     }
+
+    @GetMapping(value = "/getTotalPnlById/{id}")
+    public Double getTotalPnlById(@PathVariable int id) {
+
+        return (strategyService.getTotalPnlById(id);
+    }
+
     
 }
