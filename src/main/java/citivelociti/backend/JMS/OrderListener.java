@@ -46,9 +46,12 @@ public class OrderListener {
                     //TRADE CLOSED
                     double pnl = orderService.getProfitById(order.getId());
                     order.setPnl(pnl);
+                    orderService.save(order);
                     Strategy strat = strategyService.findById(order.getStrategyId());
                     strat.addPnl(pnl);
-                    orderService.save(order);
+                    strat.setTotalPnlPercent(strat.getTotalPnl()/strat.getInitialCapital()*100);
+                    //Double balance = strat.getInitialCapital() + pnl;
+                    //strat.setInitialCapital(balance);
                     strategyService.save(strat);
                 }
 

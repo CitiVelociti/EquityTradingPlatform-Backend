@@ -2,6 +2,7 @@ package citivelociti.backend.Services;
 
 import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.OrderStatus;
+import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
@@ -39,12 +40,29 @@ public class EngineService {
 
     private List<Strategy> activeStrategies;
 
-    @Scheduled(fixedRate=1000)
-    public void readFeed() {
+    @Scheduled(fixedRate =1000)
+    public void checkLimits(){
+        List<Strategy> strategies = strategyService.findAll();
+        System.out.println(strategies);
+        strategies.parallelStream().forEach((strategy) -> {
+            if(strategy.getTotalPnlPercent()<= -10.0){
+                strategy.setStatus(Status.EXITED);
+            } else if(strategy.getTotalPnlPercent() >= strategy.getLimits()){
+                strategy.setStatus(Status.EXITED);
+            }
+            strategyService.save(strategy);
+        });
+
+    }
+    @Scheduled(fixedRate=100)
+    public void runActiveStrats() {
         //Eventually we want to fetch all types of strategies
-        activeStrategies = strategyService.findAllByType("TMAStrategy");
+        activeStrategies = strategyService.findAllByStatus(Status.ACTIVE);
         activeStrategies.parallelStream().forEach((strategy)->{
+            //long start = System.currentTimeMillis();
             calculate(strategy);
+           // long elapsed = System.currentTimeMillis() - start;
+           // System.out.println(elapsed);
         });
     }
 
@@ -70,8 +88,6 @@ public class EngineService {
             if(tmaStrategy.getShortBelow() && (slowSMAValue > fastSMAValue)) {
                 tmaStrategy.setShortBelow(false);
                 strategy = strategyService.save(tmaStrategy);
-                System.out.println("Crossover on: + " + strategy.getName());
-                //Make the order on our end
                 if(strategy.getCurrentPosition() == Position.CLOSED) {
                     Order order = new Order(strategy.getId(), true, currentPrice);
                     order = orderService.save(order);
@@ -149,10 +165,9 @@ public class EngineService {
             public Message createMessage(Session session) throws JMSException {
                 MapMessage message = session.createMapMessage();
                 message.setBoolean("buy",buy);
-                //message.setInt("id", tradeId);
+                message.setString("stock", stock);
                 message.setDouble("price",price);
                 message.setInt("size",size);
-                message.setString("stock", stock);
                 message.setString("whenAsDate", whenAsDate);
                 message.setJMSCorrelationID(correlationID + "");
                 return message;
@@ -161,36 +176,4 @@ public class EngineService {
         jmsTemplate.send("OrderBroker", messageCreator);
 
     }
-    /*
-    @Scheduled(fixedRate=1000)
-    public String requestData(){
-
-        String urlString = "http://nyc31.conygre.com:31/Stock/getStockPriceList/msft?howManyValues=100";
-        String response = "";
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            int status = con.getResponseCode();
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer content = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-                response = inputLine;
-                JSONArray jsonArray = new JSONArray(response);
-                for (Object obj:jsonArray) {
-                    JSONObject jsonObject = new JSONObject(obj.toString());
-                    System.out.println(jsonObject.get("price").toString());
-                }
-            }
-            in.close();
-            con.disconnect();
-        } catch(Exception e){
-
-        }
-        return response;
-    }
-    */
-
 }

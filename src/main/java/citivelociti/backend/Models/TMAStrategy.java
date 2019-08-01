@@ -27,8 +27,8 @@ public class TMAStrategy extends Strategy {
 
     }
 
-    public TMAStrategy(String name, String ticker, Double quantity, Double limit, Double stop, Integer slowAvgIntervale, Integer fastAvgIntervale) {
-        super(name, ticker, quantity, limit, stop);
+    public TMAStrategy(Double initialCapital, String name, String ticker, Double quantity, Double limit, Double stop, Integer slowAvgIntervale, Integer fastAvgIntervale) {
+        super(initialCapital, name, ticker, quantity, limit, stop);
         this.slowAvgIntervale = slowAvgIntervale;
         this.fastAvgIntervale = fastAvgIntervale;
     }
