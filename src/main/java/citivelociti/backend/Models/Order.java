@@ -7,35 +7,37 @@ import java.util.Date;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "trade")
-public class Trade implements ITrade {
+@Table(name = "orders")
+public class Order implements ITrade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private Integer strategyId;     // The strategy which this trade is using
     private Boolean buy;            // True if the trader is buying, o.w. false -> trader is selling
-    private Double openPrice;       // Price of bought stock
-    private Double closePrice;      // Price of sell stock
+    private Double price;       // Price of bought stock
+    //private Double closePrice;      // Price of sell stock
     @Basic
     @Temporal(TemporalType.TIMESTAMP)
-    private Date openDate;          // Date which the strategy started
-    @Basic
+    private Date date;          // Date which the strategy started
+
+    /*@Basic
     @Temporal(TemporalType.TIMESTAMP)
     private Date closeDate;         // Date which the strategy ended
+    */
     @Enumerated
     private TradeStatus status;     // OPEN, FILLED, REJECTED
 
-    public Trade() {
+    public Order() {
         
     }
 
-    public Trade(int strategyId, boolean buy, double openPrice) {
+    public Order(Integer strategyId, Boolean buy, Double price) {
         this.strategyId = strategyId;
         this.buy = buy;
-        this.openPrice = openPrice;
-        this.openDate = Calendar.getInstance().getTime();
-        this.status = TradeStatus.OPEN;
+        this.price = price;
+        this.date = Calendar.getInstance().getTime();
+        this.status = TradeStatus.UNFILLED;
     }
 
     public Integer getId() {
@@ -62,36 +64,20 @@ public class Trade implements ITrade {
         this.buy = buy;
     }
 
-    public Double getOpenPrice() {
-        return openPrice;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setOpenPrice(Double openPrice) {
-        this.openPrice = openPrice;
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
-    public Double getClosePrice() {
-        return closePrice;
+    public Date getDate() {
+        return date;
     }
 
-    public void setClosePrice(Double closePrice) {
-        this.closePrice = closePrice;
-    }
-
-    public Date getOpenDate() {
-        return openDate;
-    }
-
-    public void setOpenDate(Date openDate) {
-        this.openDate = openDate;
-    }
-
-    public Date getCloseDate() {
-        return closeDate;
-    }
-
-    public void setCloseDate(Date closeDate) {
-        this.closeDate = closeDate;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public TradeStatus getStatus() {
@@ -100,5 +86,17 @@ public class Trade implements ITrade {
 
     public void setStatus(TradeStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", strategyId=" + strategyId +
+                ", buy=" + buy +
+                ", price=" + price +
+                ", date=" + date +
+                ", status=" + status +
+                '}';
     }
 }

@@ -27,7 +27,7 @@ public abstract class Strategy implements IStrategy {
     private Position currentPosition;
 
     public Strategy() {
-        this.stop = 10;
+        this.stop = 10.0;
     }
 
     public Strategy(String name, String ticker, Double quantity, Double limit, Double stop) {
