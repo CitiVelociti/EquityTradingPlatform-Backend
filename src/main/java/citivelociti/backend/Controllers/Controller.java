@@ -32,9 +32,7 @@ public class Controller {
 
         List<String> symbols = getSymbols();
         for(int i = 0 ; i < 15; i++) {
-
             TMAStrategy newTMA = new TMAStrategy(100000.0, "Strategy: " + i, symbols.get((int) (Math.random() * (525 - 0))), 1000.0, 5.0, 5.0, 1, 10);
-
             strategyService.save(newTMA);
         }
 
@@ -48,7 +46,6 @@ public class Controller {
     }
 
     public List<String> getSymbols(){
-
         ArrayList<String> symbols = new ArrayList<String>();
         String response = "";
         try {
@@ -66,7 +63,6 @@ public class Controller {
             in.close();
             con.disconnect();
         } catch(Exception e) {}
-
         JSONArray jsonArray = new JSONArray(response);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());

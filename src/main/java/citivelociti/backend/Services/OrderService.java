@@ -73,11 +73,7 @@ public class OrderService {
             return null;
         } else if (order.getStatus() == OrderStatus.FILLED) {
             try {
-                Order recentOrder = orderRepo.findAllByStrategyIdOrderByDateDesc(order.getStrategyId()).get(1);
-
-                System.out.println("TRADE COMPLETED BETWNEEN:");
-                System.out.println("Prev price:" + recentOrder.getPrice());
-                System.out.println("Price now: " + order.getPrice());
+                Order recentOrder = orderRepo.findAllByStrategyIdOrderByDateDesc(order.getStrategyId()).get(1);;
                 return (order.getPrice() - recentOrder.getPrice()) * strategyRepo.findById(order.getStrategyId()).get().getQuantity();
             } catch(Exception ex) {
                 // Need to change the exception later.
