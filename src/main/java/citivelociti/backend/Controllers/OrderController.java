@@ -38,13 +38,13 @@ public class OrderController {
         return orderService.findAllByBuy(buy);
     }
 
-    @GetMapping(value = "/getAllByOpenDateAsc")
+    @GetMapping(value = "/getAllByDateAsc")
     public @ResponseBody List<Order> findAllByOrderByDateAsc() {
         return orderService.findAllByOrderByDateAsc();
     }
 
     @GetMapping(value = "/getAllByDateDesc")
-    public @ResponseBody List<Order> getAllByOpenDateDesc() {
+    public @ResponseBody List<Order> getAllByDateDesc() {
         return orderService.findAllByOrderByDateDesc();
     }
 

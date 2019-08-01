@@ -17,6 +17,8 @@ public interface OrderRepo extends JpaRepository<Order, Integer> {
     // List of trades given a strategy id
     public List<Order> findAllByStrategyId(Integer strategyId);
 
+    public List<Order> findAllByOrderStrategyIdByDateDesc(Integer strategyId);
+
     // Returns a list of all buys or sells depending on the parameter.
     public List<Order> findAllByBuy(Boolean buy);
 
