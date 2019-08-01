@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -46,6 +47,18 @@ public class OrderController {
     @GetMapping(value = "/getAllByDateDesc")
     public @ResponseBody List<Order> getAllByDateDesc() {
         return orderService.findAllByOrderByDateDesc();
+    }
+
+    @GetMapping(value = "/getByIdDesc/{id}")
+    public @ResponseBody List<Order> getByIdDesc(@PathVariable int id){
+        List<Order> orders = orderService.findAllByStrategyId((Integer)id);
+        Collections.reverse(orders);
+        return orders;
+    }
+    @GetMapping(value = "/getByIdAsc/{id}")
+    public @ResponseBody List<Order> getByIdAsc(@PathVariable int id){
+        List<Order> orders = orderService.findAllByStrategyId((Integer)id);
+        return orders;
     }
 
     @GetMapping(value = "/getAllByStatus/{status}")
