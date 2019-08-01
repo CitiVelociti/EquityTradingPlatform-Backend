@@ -44,8 +44,12 @@ public class OrderListener {
                 if(!order.getBuy()){
 
                     //TRADE CLOSED
-                    order.setPnl(orderService.getProfitById(order.getId()));
+                    double pnl = orderService.getProfitById(order.getId());
+                    order.setPnl(pnl);
+                    Strategy strat = strategyService.findById(order.getStrategyId());
+                    strat.addPnl(pnl);
                     orderService.save(order);
+                    strategyService.save(strat);
                 }
 
             } else if (!mapMessage.getString("result").equals("REJECTED")){

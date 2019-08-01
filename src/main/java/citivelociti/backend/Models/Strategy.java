@@ -25,6 +25,7 @@ public abstract class Strategy implements IStrategy {
     private Double stop;        // Percentage to exit a strategy - loss
     @Enumerated
     private Position currentPosition;
+    private double totalPnl;
 
     public Strategy() {
         this.stop = 10.0;
@@ -38,6 +39,18 @@ public abstract class Strategy implements IStrategy {
         this.quantity = quantity;
         this.limits = limit;
         this.stop = stop;
+        this.totalPnl = 0;
+    }
+
+    public void addPnl(Double pnl){
+        totalPnl+=pnl;
+    }
+    public double getTotalPnl() {
+        return totalPnl;
+    }
+
+    public void setTotalPnl(double totalPnl) {
+        this.totalPnl = totalPnl;
     }
 
     public String getType() {
