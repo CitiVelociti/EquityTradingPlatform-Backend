@@ -1,6 +1,7 @@
 package citivelociti.backend.Services;
 
 import citivelociti.backend.Enums.Position;
+import citivelociti.backend.Enums.TradeStatus;
 import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
@@ -16,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.List;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -92,7 +94,6 @@ public class EngineService {
                 if(strategy.getCurrentPosition() == Position.CLOSED) {
                     Order order = new Order(strategy.getId(), true, currentPrice);
                     order = orderService.save(order);
-                    //Send message to broker and let it fill
                     sendMessageToBroker(order.getId(), true, currentPrice, (int) strategy.getQuantity().doubleValue(), ticker, currentTime);
                     strategy.setCurrentPosition(Position.OPEN);
                     strategyService.save(strategy);
@@ -170,7 +171,7 @@ public class EngineService {
             public Message createMessage(Session session) throws JMSException {
                 MapMessage message = session.createMapMessage();
                 message.setBoolean("buy",buy);
-                //message.setInt("id", id);
+                //message.setInt("id", tradeId);
                 message.setDouble("price",price);
                 message.setInt("size",size);
                 message.setString("stock", stock);
@@ -179,7 +180,20 @@ public class EngineService {
                 return message;
             }
         };
-        jmsTemplate.send("OrderBroker_Reply", messageCreator);
+        jmsTemplate.send("OrderBroker", messageCreator);
+
+        if(buy){
+            Order order = orderService.findById(correlationID);
+            order.setStatus(TradeStatus.UNFILLED);
+            orderService.save(order);
+           // Strategy strategy = strategyService.findById(order.getStrategyId());
+        } else if (!buy){
+            Order order = orderService.findById(correlationID);
+            order.setPrice(price);
+            order.setDate(Calendar.getInstance().getTime());
+            order.setStatus(TradeStatus.UNFILLED);
+            orderService.save(order);
+        }
     }
     /*
     @Scheduled(fixedRate=1000)
