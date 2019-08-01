@@ -33,8 +33,8 @@ public class OrderService {
         return orderRepo.findAllByStrategyId(strategyId);
     }
 
-    public List<Order> findAllByOrderStrategyIdByDateDesc(Integer strategyId) {
-        return findAllByOrderStrategyIdByDateDesc(strategyId);
+    public List<Order> findAllByStrategyIdOrderByDateDesc(Integer strategyId) {
+        return findAllByStrategyIdOrderByDateDesc(strategyId);
     }
 
     public List<Order> findAllByBuy(Boolean buy) {
