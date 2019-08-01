@@ -1,6 +1,7 @@
 package citivelociti.backend.Services;
 
 import citivelociti.backend.Models.Order;
+import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Repositories.StrategyRepo;
 import citivelociti.backend.Repositories.OrderRepo;
 import citivelociti.backend.Enums.OrderStatus;
@@ -72,8 +73,12 @@ public class OrderService {
             return null;
         } else if (order.getStatus() == OrderStatus.FILLED) {
             try {
-                Order recentOrder = orderRepo.findAllByOrderStrategyIdByDateDesc(order.getStrategyId()).get(0);
-                return (order.getPrice() - recentOrder.getPrice()) * strategyRepo.findAllById(order.getStrategyId()).getQuantity();
+                Order recentOrder = orderRepo.findAllByStrategyIdOrderByDateDesc(order.getStrategyId()).get(1);
+
+                System.out.println("TRADE COMPLETED BETWNEEN:");
+                System.out.println("Prev price:" + recentOrder.getPrice());
+                System.out.println("Price now: " + order.getPrice());
+                return (order.getPrice() - recentOrder.getPrice()) * strategyRepo.findById(order.getStrategyId()).get().getQuantity();
             } catch(Exception ex) {
                 // Need to change the exception later.
                 // Exception should be when tradeRepo.findAllByOrderByDateDesc() returns null or get(0) is not valid

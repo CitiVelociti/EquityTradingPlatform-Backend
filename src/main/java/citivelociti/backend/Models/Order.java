@@ -16,6 +16,7 @@ public class Order implements IOrder {
     private Integer strategyId;     // The strategy which this trade is using
     private Boolean buy;            // True if the trader is buying, o.w. false -> trader is selling
     private Double price;       // Price of bought stock
+    private Double pnl;
     //private Double closePrice;      // Price of sell stock
     @Basic
     @Temporal(TemporalType.TIMESTAMP)
@@ -38,6 +39,14 @@ public class Order implements IOrder {
         this.price = price;
         this.date = Calendar.getInstance().getTime();
         this.status = OrderStatus.UNFILLED;
+    }
+
+    public Double getPnl() {
+        return pnl;
+    }
+
+    public void setPnl(Double pnl) {
+        this.pnl = pnl;
     }
 
     public Integer getId() {

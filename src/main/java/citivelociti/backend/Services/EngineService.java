@@ -1,6 +1,7 @@
 package citivelociti.backend.Services;
 
 import citivelociti.backend.Enums.Position;
+import citivelociti.backend.Enums.OrderStatus;
 import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
@@ -16,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.List;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -41,21 +43,8 @@ public class EngineService {
     public void readFeed() {
         //Eventually we want to fetch all types of strategies
         activeStrategies = strategyService.findAllByType("TMAStrategy");
-
-        System.out.println(activeStrategies);
         activeStrategies.parallelStream().forEach((strategy)->{
-            Boolean signal = calculate(strategy);
-            /*
-            if(signal && strategy.getCurrentPosition() == Position.CLOSED) {
-                System.out.println("OPEN THE POSITION");
-                strategy.setCurrentPosition(Position.OPEN);
-                strategyService.save(strategy);
-            } else if(signal && strategy.getCurrentPosition() == Position.OPEN) {
-                System.out.println("CLOSE THE POSITION");
-                strategy.setCurrentPosition(Position.CLOSED);
-                strategyService.save(strategy);
-            }
-            */
+            calculate(strategy);
         });
     }
 
@@ -66,12 +55,9 @@ public class EngineService {
             String ticker = tmaStrategy.getTicker();
             double currentPrice = (double)getCurrentMarketData(ticker, "price");
             String currentTime = (String)getCurrentMarketData(ticker, "time");
-            System.out.println("current price: " + currentPrice);
             double slowSMAValue = simpleMovingAverage(ticker, tmaStrategy.getSlowAvgIntervale());
             double fastSMAValue = simpleMovingAverage(ticker, tmaStrategy.getFastAvgIntervale());
-            System.out.println("Checking Strategy " + strategy.getName() + ":");
-            System.out.println("Slow SMA: " + slowSMAValue);
-            System.out.println("Fast SMA: " + fastSMAValue);
+            System.out.println("Running Strategies... ");
 
             //Initialize strategy shortBelowOrAbove
             if(tmaStrategy.getShortBelow() == null && slowSMAValue < fastSMAValue) {
@@ -81,28 +67,22 @@ public class EngineService {
                 tmaStrategy.setShortBelow(false);
                 strategyService.save(tmaStrategy);
             }
-
             if(tmaStrategy.getShortBelow() && (slowSMAValue > fastSMAValue)) {
                 tmaStrategy.setShortBelow(false);
                 strategy = strategyService.save(tmaStrategy);
-                System.out.println("Signal: true");
-
-
+                System.out.println("Crossover on: + " + strategy.getName());
                 //Make the order on our end
                 if(strategy.getCurrentPosition() == Position.CLOSED) {
                     Order order = new Order(strategy.getId(), true, currentPrice);
                     order = orderService.save(order);
-                    //Send message to broker and let it fill
                     sendMessageToBroker(order.getId(), true, currentPrice, (int) strategy.getQuantity().doubleValue(), ticker, currentTime);
                     strategy.setCurrentPosition(Position.OPEN);
                     strategyService.save(strategy);
                 }
-
                 return true;
             } else if(!tmaStrategy.getShortBelow() && (slowSMAValue < fastSMAValue)) {
                 tmaStrategy.setShortBelow(true);
                 strategyService.save(tmaStrategy);
-
                 if(strategy.getCurrentPosition() == Position.OPEN) {
                     Order order = new Order(strategy.getId(), false, currentPrice);
                     order = orderService.save(order);
@@ -114,7 +94,6 @@ public class EngineService {
                 return true;
             }
         }
-        System.out.println("Signal: false");
         return false;
     }
 
@@ -170,7 +149,7 @@ public class EngineService {
             public Message createMessage(Session session) throws JMSException {
                 MapMessage message = session.createMapMessage();
                 message.setBoolean("buy",buy);
-                //message.setInt("id", id);
+                //message.setInt("id", tradeId);
                 message.setDouble("price",price);
                 message.setInt("size",size);
                 message.setString("stock", stock);
@@ -179,7 +158,8 @@ public class EngineService {
                 return message;
             }
         };
-        jmsTemplate.send("OrderBroker_Reply", messageCreator);
+        jmsTemplate.send("OrderBroker", messageCreator);
+
     }
     /*
     @Scheduled(fixedRate=1000)

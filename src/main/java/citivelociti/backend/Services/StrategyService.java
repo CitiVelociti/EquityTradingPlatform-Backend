@@ -1,7 +1,9 @@
 package citivelociti.backend.Services;
 
 import citivelociti.backend.Enums.Status;
+import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
+import citivelociti.backend.Repositories.OrderRepo;
 import citivelociti.backend.Repositories.StrategyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ public class StrategyService {
 
     @Autowired
     StrategyRepo strategyRepo;
+
+    @Autowired
+    OrderRepo orderRepo;
 
     public Strategy save(Strategy s) {
         return strategyRepo.save(s);
@@ -53,6 +58,19 @@ public class StrategyService {
         strategy.setStatus(Status.PAUSED);
         strategyRepo.save(strategy);
         return strategy;
+    }
+
+    public Double getTotalPnlById(int id){
+        double totalPnl = 0;
+        List <Order> orders = orderRepo.findAllByStrategyId(id);
+        for(Order order: orders){
+            if(!order.getBuy()){
+                totalPnl += order.getPnl();
+            }
+        }
+
+        return totalPnl;
+
     }
 
 }
