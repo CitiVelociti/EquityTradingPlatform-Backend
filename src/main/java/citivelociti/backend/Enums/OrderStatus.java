@@ -1,7 +1,7 @@
 package citivelociti.backend.Enums;
 
-public enum TradeStatus {
-    OPEN,
+public enum OrderStatus {
+    UNFILLED,
     FILLED,
     REJECTED,
 }
