@@ -30,28 +30,18 @@ public class OrderListener {
     public void receiveMessage(Message message) {
         try {
             MapMessage mapMessage = (MapMessage)message;
-
-            System.out.println("======= BROKER REPLY RECEIVED ========");
-            System.out.println(mapMessage.getString("result"));
-
-            //PUT THIS BACK IN LATER WHEN GET MOCKED RESPONSE FROM BROKER
-           // if(result.equals("FILLED")){
             if(mapMessage.getString("result").equals("FILLED")){
                 Order order = orderService.findById(Integer.parseInt(mapMessage.getJMSCorrelationID()));
                 order.setStatus(OrderStatus.FILLED);
                 orderService.save(order);
                 Strategy strategy = strategyService.findById(order.getStrategyId());
                 if(!order.getBuy()){
-
-                    //TRADE CLOSED
                     double pnl = orderService.getProfitById(order.getId());
                     order.setPnl(pnl);
                     orderService.save(order);
                     Strategy strat = strategyService.findById(order.getStrategyId());
                     strat.addPnl(pnl);
-                    strat.setTotalPnlPercent(strat.getTotalPnl()/strat.getInitialCapital()*100);
-                    //Double balance = strat.getInitialCapital() + pnl;
-                    //strat.setInitialCapital(balance);
+                    strat.setTotalPnlPercent(strat.getTotalPnl()/strat.getInitialCapital());
                     strategyService.save(strat);
                 }
 

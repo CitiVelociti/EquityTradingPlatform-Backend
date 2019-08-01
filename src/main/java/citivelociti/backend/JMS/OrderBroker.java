@@ -23,7 +23,6 @@ public class OrderBroker {
     @JmsListener(destination = "OrderBroker", containerFactory = "myJmsContainerFactory")
     public void receiveMessage(Message message) {
         try {
-            System.out.println("======= YOUR ORDER  RECEIVED ========");
             MapMessage mapMessage = (MapMessage)message;
             Boolean buy = mapMessage.getBoolean("buy");
             Double price = mapMessage.getDouble("price");
@@ -31,16 +30,11 @@ public class OrderBroker {
             String stock = mapMessage.getString("stock");
             String whenAsDate = mapMessage.getString("whenAsDate");
             int correlationID = Integer.parseInt(mapMessage.getJMSCorrelationID());
-
             System.out.println(buy);
             System.out.println(price);
             System.out.println(price);
             System.out.println(size);
             sendMessageBack(correlationID, buy, price,  size,  stock, whenAsDate);
-            //PUT THIS BACK IN LATER WHEN GET MOCKED RESPONSE FROM BROKER
-            // if(result.equals("FILLED")){
-
-
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -53,7 +47,6 @@ public class OrderBroker {
         jmsTemplate.send("OrderBroker_Reply", new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
-
                 MapMessage message = session.createMapMessage();
                 message.setBoolean("buy",buy);
                 message.setDouble("price",price);
