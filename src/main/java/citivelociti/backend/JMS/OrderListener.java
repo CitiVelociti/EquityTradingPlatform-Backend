@@ -37,7 +37,9 @@ public class OrderListener {
                 Strategy strategy = strategyService.findById(order.getStrategyId());
                 if(!order.getBuy()){
                     double pnl = orderService.getProfitById(order.getId());
+                    double pnlPercent = orderService.getProfitPercentById(order.getId());
                     order.setPnl(pnl);
+                    order.setPnlPercent(pnlPercent);
                     orderService.save(order);
                     Strategy strat = strategyService.findById(order.getStrategyId());
                     strat.addPnl(pnl);

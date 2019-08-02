@@ -83,5 +83,21 @@ public class OrderService {
         return null;
     }
 
+    public Double getProfitPercentById(int id) {
+        Order order = orderRepo.findById(id);
+        if(order == null) {
+            return null;
+        } else if (order.getStatus() == OrderStatus.FILLED) {
+            try {
+                Order recentOrder = orderRepo.findAllByStrategyIdOrderByDateDesc(order.getStrategyId()).get(1);;
+                return (order.getPrice() - recentOrder.getPrice()) / recentOrder.getPrice();
+            } catch(Exception ex) {
+                // Need to change the exception later.
+                // Exception should be when tradeRepo.findAllByOrderByDateDesc() returns null or get(0) is not valid
+            }
+        }
+        return null;
+    }
+
 }
 

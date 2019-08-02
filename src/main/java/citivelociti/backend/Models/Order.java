@@ -17,6 +17,7 @@ public class Order implements IOrder {
     private Boolean buy;            // True if the trader is buying, o.w. false -> trader is selling
     private Double price;       // Price of bought stock
     private Double pnl;
+    private Double pnlPercent;
     //private Double closePrice;      // Price of sell stock
     @Basic
     @Temporal(TemporalType.TIMESTAMP)
@@ -39,6 +40,14 @@ public class Order implements IOrder {
         this.price = price;
         this.date = Calendar.getInstance().getTime();
         this.status = OrderStatus.UNFILLED;
+    }
+
+    public Double getPnlPercent() {
+        return pnlPercent;
+    }
+
+    public void setPnlPercent(Double pnlPercent) {
+        this.pnlPercent = pnlPercent;
     }
 
     public Double getPnl() {
