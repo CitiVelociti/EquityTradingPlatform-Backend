@@ -32,17 +32,17 @@ public class Controller {
     public String helloWorld(HttpServletResponse response) {
 
         List<String> symbols = getSymbols();
-        /*
-        for(int i = 0 ; i < 15; i++) {
-            TMAStrategy newTMA = new TMAStrategy(100000.0, "Strategy: " + i, symbols.get((int) (Math.random() * (525 - 0))), 1000.0, 5.0, 5.0, 1, 10);
-            strategyService.save(newTMA);
-        }
-        */
 
-        BBStrategy newBB = new BBStrategy(1000.0,"My bollinger strat", "AAPL", 5.0, 5.0, 5.0, 2);
-        //Strategy s = strategyService.save(newTMA);
-        //Order t = new Order(s.getId(), true, 5);
-        strategyService.save(newBB);
+        for(int i = 0 ; i < 15; i++) {
+
+            TMAStrategy newTMA = new TMAStrategy("TMA Strategy: " + i, symbols.get((int) (Math.random() * (525 - 0))), 500.0, 5.0, 5.0, 1, 10);
+            BBStrategy newBB = new BBStrategy("Bollinger Strategy: " + i, symbols.get((int) (Math.random() * (525 - 0))), 500.0, 5.0, 5.0, 20);
+
+            strategyService.save(newTMA);
+            strategyService.save(newBB);
+        }
+
+
         //orderService.save(t);
 
         return "Hello World!";

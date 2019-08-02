@@ -22,14 +22,14 @@ public class BBStrategy extends Strategy {
     /*
      * The default std is typically 2. If the user does not specify the std, we will default it to 2.
      */
-    public BBStrategy(Double initialCapital, String name, String ticker, Double volume, Double limit, Double stop, Integer timeSpan) {
-        super(initialCapital, name, ticker, volume, limit, stop);
+    public BBStrategy(String name, String ticker, Double volume, Double limit, Double stop, Integer timeSpan) {
+        super(name, ticker, volume, limit, stop);
         this.timeSpan = timeSpan;
         this.std = 2;
     }
 
-    public BBStrategy(Double initialCapital,String name, String ticker, Double quantity, Double limit, Double stop, Integer timeSpan, Integer std) {
-        super(initialCapital, name, ticker, quantity, limit, stop);
+    public BBStrategy(String name, String ticker, Double quantity, Double limit, Double stop, Integer timeSpan, Integer std) {
+        super(name, ticker, quantity, limit, stop);
         this.timeSpan = timeSpan;
         this.std = std;
     }

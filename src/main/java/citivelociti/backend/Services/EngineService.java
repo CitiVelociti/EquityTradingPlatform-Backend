@@ -85,9 +85,11 @@ public class EngineService {
     public void calculate(Strategy strategy) {
         if(strategy.getType().equals("TMAStrategy")) {
             TMAStrategy tmaStrategy = (TMAStrategy)strategy;
+            initializeInitialBalance(tmaStrategy);
             doTMACalculation(tmaStrategy);
         } else if (strategy.getType().equals("BBStrategy")){
             BBStrategy bbStrategy = (BBStrategy)strategy;
+            initializeInitialBalance(bbStrategy);
             doBBCalculation(bbStrategy);
         }
     }
@@ -113,6 +115,13 @@ public class EngineService {
         }
 
 
+    }
+    void initializeInitialBalance(Strategy strategy){
+        double currentPrice = (double)getCurrentMarketData(strategy.getTicker(), "price");
+        if(strategy.getInitialCapital() == null){
+            strategy.setInitialCapital(currentPrice*strategy.getQuantity());
+            strategyService.save(strategy);
+        }
     }
     static double variance(double a[],
                            int n)

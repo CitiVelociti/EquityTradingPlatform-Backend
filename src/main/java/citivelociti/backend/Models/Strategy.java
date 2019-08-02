@@ -33,7 +33,7 @@ public abstract class Strategy implements IStrategy {
         this.stop = 10.0;
     }
 
-    public Strategy(Double initialCapital, String name, String ticker, Double quantity, Double limit, Double stop) {
+    public Strategy(String name, String ticker, Double quantity, Double limit, Double stop) {
         this.name = name;
         this.currentPosition = Position.CLOSED;
         this.status = Status.ACTIVE;
@@ -43,7 +43,7 @@ public abstract class Strategy implements IStrategy {
         this.stop = stop;
         this.totalPnl = 0.0;
         this.totalPnlPercent = 0.0;
-        this.initialCapital = initialCapital;
+       // this.initialCapital = initialCapital;
     }
 
     public void addPnl(Double pnl){
