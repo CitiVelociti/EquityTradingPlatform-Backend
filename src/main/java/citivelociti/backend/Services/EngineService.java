@@ -233,19 +233,11 @@ public class EngineService {
         String response = requestData("http://nyc31.conygre.com:31/Stock/getStockPrice/" + ticker);
 
         JSONObject jsonObject;
-        try {
-            jsonObject = new JSONObject(response);
-
+        jsonObject = new JSONObject(response);
         if(dataField.equals("price")) {
             return Double.parseDouble(jsonObject.get("price").toString());
         } else if(dataField.equals("time")) {
             return jsonObject.get("theTime").toString();
-        }
-        }catch(Exception e){
-            System.out.println("========RESPONSE FRM API====");
-            System.out.println("TICKER:" + ticker);
-            System.out.println(response);
-
         }
         return null;
     }
