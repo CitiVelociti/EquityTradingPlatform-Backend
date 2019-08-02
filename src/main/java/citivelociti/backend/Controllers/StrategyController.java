@@ -89,7 +89,7 @@ public class StrategyController {
             TMAStrategy newTMA = new TMAStrategy(name, ticker, quantity, limit, stop, slowAvgIntervale, fastAvgIntervale);
             return strategyService.save(newTMA);
         } else if(type.equals("BBStrategy")) {
-            Integer timeSpan = Integer.parseInt(request.getParameter("timeSpan"));
+            Integer timeSpan = Integer.parseInt(payload.get("timeSpan"));
             BBStrategy newBB = new BBStrategy(name, ticker, quantity, limit, stop, timeSpan);
             return strategyService.save(newBB);
         }
