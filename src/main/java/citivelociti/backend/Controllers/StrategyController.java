@@ -81,16 +81,16 @@ public class StrategyController {
         Double quantity = Double.parseDouble(payload.get("quantity"));
         Double limit = Double.parseDouble(payload.get("limit"));
         Double stop = Double.parseDouble(payload.get("stop"));
-        Double initialCapital = Double.parseDouble(payload.get("initialCapital"));
+
 
         if(type.equals("TMAStrategy")) {
             Integer slowAvgIntervale = Integer.parseInt(payload.get("slowAvgIntervale"));
             Integer fastAvgIntervale = Integer.parseInt(payload.get("fastAvgIntervale"));
-            TMAStrategy newTMA = new TMAStrategy(initialCapital,name, ticker, quantity, limit, stop, slowAvgIntervale, fastAvgIntervale);
+            TMAStrategy newTMA = new TMAStrategy(name, ticker, quantity, limit, stop, slowAvgIntervale, fastAvgIntervale);
             return strategyService.save(newTMA);
         } else if(type.equals("BBStrategy")) {
             Integer timeSpan = Integer.parseInt(request.getParameter("timeSpan"));
-            BBStrategy newBB = new BBStrategy(initialCapital, name, ticker, quantity, limit, stop, timeSpan);
+            BBStrategy newBB = new BBStrategy(name, ticker, quantity, limit, stop, timeSpan);
             return strategyService.save(newBB);
         }
         return null;
