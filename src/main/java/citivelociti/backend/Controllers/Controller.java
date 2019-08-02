@@ -1,5 +1,6 @@
 package citivelociti.backend.Controllers;
 
+import citivelociti.backend.Models.BBStrategy;
 import citivelociti.backend.Models.TMAStrategy;
 import citivelociti.backend.Services.StrategyService;
 import citivelociti.backend.Services.OrderService;
@@ -31,15 +32,17 @@ public class Controller {
     public String helloWorld(HttpServletResponse response) {
 
         List<String> symbols = getSymbols();
+        /*
         for(int i = 0 ; i < 15; i++) {
             TMAStrategy newTMA = new TMAStrategy(100000.0, "Strategy: " + i, symbols.get((int) (Math.random() * (525 - 0))), 1000.0, 5.0, 5.0, 1, 10);
             strategyService.save(newTMA);
         }
+        */
 
-       // BBStrategy newBB = new BBStrategy("My bollinger strat", "AAPL", 5.0, 5.0, 5.0, 2);
+        BBStrategy newBB = new BBStrategy(1000.0,"My bollinger strat", "AAPL", 5.0, 5.0, 5.0, 2);
         //Strategy s = strategyService.save(newTMA);
         //Order t = new Order(s.getId(), true, 5);
-       // strategyService.save(newBB);
+        strategyService.save(newBB);
         //orderService.save(t);
 
         return "Hello World!";

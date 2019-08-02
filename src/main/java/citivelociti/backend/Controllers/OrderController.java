@@ -52,7 +52,8 @@ public class OrderController {
     @GetMapping(value = "/getByIdDesc/{id}")
     public @ResponseBody List<Order> getByIdDesc(@PathVariable int id){
         List<Order> orders = orderService.findAllByStrategyId((Integer)id);
-        Collections.reverse(orders);
+        //TODO: CHANGE REVERSE
+        //Collections.reverse(orders);
         return orders;
     }
     @GetMapping(value = "/getByIdAsc/{id}")
