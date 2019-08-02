@@ -1,9 +1,5 @@
 package citivelociti.backend.Models;
 
-import citivelociti.backend.Services.EngineService;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 

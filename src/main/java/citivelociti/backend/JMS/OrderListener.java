@@ -3,7 +3,6 @@ package citivelociti.backend.JMS;
 import java.io.File;
 import java.util.Calendar;
 
-import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.OrderStatus;
 import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
-
 import javax.jms.MapMessage;
 import javax.jms.Message;
 

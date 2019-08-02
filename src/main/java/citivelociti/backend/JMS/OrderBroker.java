@@ -6,14 +6,10 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
-import org.springframework.util.FileSystemUtils;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.Session;
-import java.io.File;
-import java.util.Calendar;
 
 @Component
 public class OrderBroker {

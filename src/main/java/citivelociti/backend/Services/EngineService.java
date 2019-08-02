@@ -1,7 +1,6 @@
 package citivelociti.backend.Services;
 
 import citivelociti.backend.Enums.Position;
-import citivelociti.backend.Enums.OrderStatus;
 import citivelociti.backend.Enums.Status;
 import citivelociti.backend.Models.BBStrategy;
 import citivelociti.backend.Models.Order;
@@ -9,7 +8,6 @@ import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -19,7 +17,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Calendar;
 import java.util.List;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -144,7 +141,7 @@ public class EngineService {
         int n = arr.length;
         return Math.sqrt(variance(arr, n));
     }
-    
+
     public void doTMACalculation(TMAStrategy tmaStrategy){
         String ticker = tmaStrategy.getTicker();
         Strategy bufferStrategy;

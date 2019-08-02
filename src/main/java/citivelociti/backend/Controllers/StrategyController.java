@@ -8,7 +8,6 @@ import citivelociti.backend.Services.StrategyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +80,6 @@ public class StrategyController {
         Double quantity = Double.parseDouble(payload.get("quantity"));
         Double limit = Double.parseDouble(payload.get("limit"));
         Double stop = Double.parseDouble(payload.get("stop"));
-
 
         if(type.equals("TMAStrategy")) {
             Integer slowAvgIntervale = Integer.parseInt(payload.get("slowAvgIntervale"));
