@@ -45,9 +45,9 @@ public class EngineService {
     public void checkLimits(){
         List<Strategy> strategies = strategyService.findAll();
         strategies.parallelStream().forEach((strategy) -> {
-            if(strategy.getTotalPnlPercent()<= -10.0){
+            if(strategy.getTotalPnlPercent()*100<= -10.0){
                 strategy.setStatus(Status.EXITED);
-            } else if(strategy.getTotalPnlPercent() >= strategy.getLimits()){
+            } else if(strategy.getTotalPnlPercent()*100 >= strategy.getLimits()){
                 strategy.setStatus(Status.EXITED);
             }
             strategyService.save(strategy);
@@ -102,19 +102,14 @@ public class EngineService {
         double top_bb = sma + standardDeviation;
         double bottom_bb = sma - standardDeviation;
         double currentPrice = (double)getCurrentMarketData(ticker, "price");
-        System.out.println("TOPBB:" + top_bb);
-        System.out.println("cur:" +currentPrice);
-        System.out.println("BOTTOMBB:" +bottom_bb);
+
         if(currentPrice > top_bb && bbStrategy.getCurrentPosition() == Position.CLOSED){
-            System.out.println("PRICE BELOW STD, BUY");
+            //System.out.println("PRICE BELOW STD, BUY");
             makeOrderAndPingBroker(bbStrategy, true);
         } else if (currentPrice < bottom_bb && bbStrategy.getCurrentPosition() == Position.OPEN){
-            System.out.println("PRICE OVER STD, SELL");
+            //System.out.println("PRICE OVER STD, SELL");
             makeOrderAndPingBroker(bbStrategy, false);
-
         }
-
-
     }
     void initializeInitialBalance(Strategy strategy){
         double currentPrice = (double)getCurrentMarketData(strategy.getTicker(), "price");
@@ -234,12 +229,23 @@ public class EngineService {
     }
 
     public Object getCurrentMarketData(String ticker, String dataField) {
+
         String response = requestData("http://nyc31.conygre.com:31/Stock/getStockPrice/" + ticker);
-        JSONObject jsonObject = new JSONObject(response);
+
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(response);
+
         if(dataField.equals("price")) {
             return Double.parseDouble(jsonObject.get("price").toString());
         } else if(dataField.equals("time")) {
             return jsonObject.get("theTime").toString();
+        }
+        }catch(Exception e){
+            System.out.println("========RESPONSE FRM API====");
+            System.out.println("TICKER:" + ticker);
+            System.out.println(response);
+
         }
         return null;
     }
@@ -250,6 +256,9 @@ public class EngineService {
             URL url = new URL(urlString);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
