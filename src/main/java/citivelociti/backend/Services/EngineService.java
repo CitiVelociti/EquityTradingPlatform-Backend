@@ -3,6 +3,7 @@ package citivelociti.backend.Services;
 import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.OrderStatus;
 import citivelociti.backend.Enums.Status;
+import citivelociti.backend.Models.BBStrategy;
 import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
@@ -53,63 +54,150 @@ public class EngineService {
         });
 
     }
-    @Scheduled(fixedRate=100)
+    @Scheduled(fixedRate=500)
     public void runActiveStrats() {
         //Eventually we want to fetch all types of strategies
         activeStrategies = strategyService.findAllByStatus(Status.ACTIVE);
         activeStrategies.parallelStream().forEach((strategy)->{
-            //long start = System.currentTimeMillis();
-            System.out.println("Running Strategies... ");
             calculate(strategy);
-           // long elapsed = System.currentTimeMillis() - start;
-           // System.out.println(elapsed);
         });
     }
 
+    @Scheduled(fixedRate = 100)
+    public void closeAllPausedTrades(){
+        List<Strategy> pausedStrategies = strategyService.findAllByStatus(Status.PAUSED);
+        pausedStrategies.parallelStream().forEach((strategy)->{
+            if(strategy.getCurrentPosition() == Position.OPEN){
+                String currentTime = (String)getCurrentMarketData(strategy.getTicker(), "time");
+                double currentPrice = (double)getCurrentMarketData(strategy.getTicker(), "price");
+                Order order = new Order(strategy.getId(), false, currentPrice);
+                order = orderService.save(order);
+                sendMessageToBroker(order.getId(), false, currentPrice, (int) strategy.getQuantity().doubleValue(),strategy.getTicker(), currentTime);
+                strategy.setCurrentPosition(Position.CLOSED);
+                strategyService.save(strategy);
+            }
+        });
+    }
+
+
+
     @Async
-    public Boolean calculate(Strategy strategy) {
+    public void calculate(Strategy strategy) {
         if(strategy.getType().equals("TMAStrategy")) {
             TMAStrategy tmaStrategy = (TMAStrategy)strategy;
-            String ticker = tmaStrategy.getTicker();
-            double currentPrice = (double)getCurrentMarketData(ticker, "price");
-            String currentTime = (String)getCurrentMarketData(ticker, "time");
-            double slowSMAValue = simpleMovingAverage(ticker, tmaStrategy.getSlowAvgIntervale());
-            double fastSMAValue = simpleMovingAverage(ticker, tmaStrategy.getFastAvgIntervale());
+            doTMACalculation(tmaStrategy);
+        } else if (strategy.getType().equals("BBStrategy")){
+            BBStrategy bbStrategy = (BBStrategy)strategy;
+            doBBCalculation(bbStrategy);
+        }
+    }
+    public void doBBCalculation(BBStrategy bbStrategy){
+        int timeSpan = bbStrategy.getTimeSpan();
+        String ticker = bbStrategy.getTicker();
+        double sma = simpleMovingAverage(ticker, timeSpan);
+        double standardDeviation = standardDeviation(valuesOverTimeSpan(ticker, timeSpan));
+        standardDeviation *= bbStrategy.getStd();
+        double top_bb = sma + standardDeviation;
+        double bottom_bb = sma - standardDeviation;
+        double currentPrice = (double)getCurrentMarketData(ticker, "price");
+        System.out.println("TOPBB:" + top_bb);
+        System.out.println("cur:" +currentPrice);
+        System.out.println("BOTTOMBB:" +bottom_bb);
+        if(currentPrice > top_bb && bbStrategy.getCurrentPosition() == Position.CLOSED){
+            System.out.println("PRICE BELOW STD, BUY");
+            makeOrderAndPingBroker(bbStrategy, true);
+        } else if (currentPrice < bottom_bb && bbStrategy.getCurrentPosition() == Position.OPEN){
+            System.out.println("PRICE OVER STD, SELL");
+            makeOrderAndPingBroker(bbStrategy, false);
 
-            //Initialize strategy shortBelowOrAbove
-            if(tmaStrategy.getShortBelow() == null && slowSMAValue < fastSMAValue) {
-                tmaStrategy.setShortBelow(true);
-                strategyService.save(tmaStrategy);
-            } else if(tmaStrategy.getShortBelow() == null && slowSMAValue > fastSMAValue) {
-                tmaStrategy.setShortBelow(false);
-                strategyService.save(tmaStrategy);
+        }
+
+
+    }
+    static double variance(double a[],
+                           int n)
+    {
+        // Compute mean (average
+        // of elements)
+        double sum = 0;
+
+        for (int i = 0; i < n; i++)
+            sum += a[i];
+        double mean = (double)sum /
+                (double)n;
+
+        // Compute sum squared
+        // differences with mean.
+        double sqDiff = 0;
+        for (int i = 0; i < n; i++)
+            sqDiff += (a[i] - mean) *
+                    (a[i] - mean);
+
+        return (double)sqDiff / n;
+    }
+    static double standardDeviation(double arr[])
+    {
+        int n = arr.length;
+        return Math.sqrt(variance(arr, n));
+    }
+    public static double calculateSD(double numArray[])
+    {
+        double sum = 0.0, standardDeviation = 0.0;
+        int length = numArray.length;
+        for(double num : numArray) {
+            sum += num;
+        }
+        double mean = sum/length;
+        for(double num: numArray) {
+            standardDeviation += Math.pow(num - mean, 2);
+        }
+        return Math.sqrt(standardDeviation/length);
+    }
+    public void doTMACalculation(TMAStrategy tmaStrategy){
+        String ticker = tmaStrategy.getTicker();
+        Strategy bufferStrategy;
+        double slowSMAValue = simpleMovingAverage(ticker, tmaStrategy.getSlowAvgIntervale());
+        double fastSMAValue = simpleMovingAverage(ticker, tmaStrategy.getFastAvgIntervale());
+        initializeTMABooleans(tmaStrategy, slowSMAValue, fastSMAValue);
+        if(tmaStrategy.getShortBelow() && (slowSMAValue > fastSMAValue)) {
+            tmaStrategy.setShortBelow(false);
+             bufferStrategy = strategyService.save(tmaStrategy);
+            if(bufferStrategy.getCurrentPosition() == Position.CLOSED) {
+                makeOrderAndPingBroker(tmaStrategy, true);
             }
-            if(tmaStrategy.getShortBelow() && (slowSMAValue > fastSMAValue)) {
-                tmaStrategy.setShortBelow(false);
-                strategy = strategyService.save(tmaStrategy);
-                if(strategy.getCurrentPosition() == Position.CLOSED) {
-                    Order order = new Order(strategy.getId(), true, currentPrice);
-                    order = orderService.save(order);
-                    sendMessageToBroker(order.getId(), true, currentPrice, (int) strategy.getQuantity().doubleValue(), ticker, currentTime);
-                    strategy.setCurrentPosition(Position.OPEN);
-                    strategyService.save(strategy);
-                }
-                return true;
-            } else if(!tmaStrategy.getShortBelow() && (slowSMAValue < fastSMAValue)) {
-                tmaStrategy.setShortBelow(true);
-                strategyService.save(tmaStrategy);
-                if(strategy.getCurrentPosition() == Position.OPEN) {
-                    Order order = new Order(strategy.getId(), false, currentPrice);
-                    order = orderService.save(order);
-                    sendMessageToBroker(order.getId(), false, currentPrice, (int) strategy.getQuantity().doubleValue(), ticker, currentTime);
-                    strategy.setCurrentPosition(Position.CLOSED);
-                    strategyService.save(strategy);
-                }
-                //sendMessageToBroker();
-                return true;
+        } else if(!tmaStrategy.getShortBelow() && (slowSMAValue < fastSMAValue)) {
+            tmaStrategy.setShortBelow(true);
+            bufferStrategy = strategyService.save(tmaStrategy);
+            if(bufferStrategy.getCurrentPosition() == Position.OPEN) {
+                makeOrderAndPingBroker(tmaStrategy, false);
             }
         }
-        return false;
+    }
+
+    public void initializeTMABooleans(TMAStrategy tmaStrategy, double slowSMAValue, double fastSMAValue){
+        if(tmaStrategy.getShortBelow() == null && slowSMAValue < fastSMAValue) {
+            tmaStrategy.setShortBelow(true);
+            strategyService.save(tmaStrategy);
+        } else if(tmaStrategy.getShortBelow() == null && slowSMAValue > fastSMAValue) {
+            tmaStrategy.setShortBelow(false);
+            strategyService.save(tmaStrategy);
+        }
+    }
+
+    public void makeOrderAndPingBroker(Strategy strategy, Boolean buy){
+
+        String ticker = strategy.getTicker();
+        double currentPrice = (double)getCurrentMarketData(ticker, "price");
+        String currentTime = (String)getCurrentMarketData(ticker, "time");
+        Order order = new Order(strategy.getId(), buy, currentPrice);
+        order = orderService.save(order);
+        sendMessageToBroker(order.getId(), buy, currentPrice, (int) strategy.getQuantity().doubleValue(), ticker, currentTime);
+        if(buy){
+            strategy.setCurrentPosition(Position.OPEN);
+        } else { strategy.setCurrentPosition(Position.CLOSED); }
+
+        strategyService.save(strategy);
+
     }
 
     public double simpleMovingAverage(String ticker, int interval) {
@@ -122,6 +210,18 @@ public class EngineService {
             smaSum += Double.parseDouble(jsonObject.get("price").toString());
         }
         return smaSum/interval;
+    }
+
+    public double[] valuesOverTimeSpan(String ticker, int interval) {
+        String url = "http://nyc31.conygre.com:31/Stock/getStockPriceList/" + ticker + "?howManyValues=" + interval;
+        String response = requestData(url);
+        JSONArray jsonArray = new JSONArray(response);
+        double[] values = new double[jsonArray.length()];
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
+            values[i] = Double.parseDouble(jsonObject.get("price").toString());
+        }
+        return values;
     }
 
     public Object getCurrentMarketData(String ticker, String dataField) {
@@ -141,12 +241,9 @@ public class EngineService {
             URL url = new URL(urlString);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            int status = con.getResponseCode();
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
-            StringBuffer content = new StringBuffer();
             while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
                 response = inputLine;
             }
             in.close();

@@ -43,7 +43,18 @@ public class StrategyController {
             strat.setStatus(Status.PAUSED);
             strategyService.save(strat);
         }
-        return strategyService.findAll();
+        return strats;
+
+    }
+
+    @GetMapping(value = "/startAll")
+    public @ResponseBody List<Strategy> startAll(){
+        List<Strategy> strats = strategyService.findAll();
+        for(Strategy strat : strats){
+            strat.setStatus(Status.ACTIVE);
+            strategyService.save(strat);
+        }
+        return strats;
 
     }
 
