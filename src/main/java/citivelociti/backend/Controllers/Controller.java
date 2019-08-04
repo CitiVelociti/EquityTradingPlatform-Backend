@@ -28,27 +28,24 @@ public class Controller {
     @Autowired
     OrderService orderService;
 
+    private static final Logger LOGGER = Logger.getLogger(ServiceImpl.class);
+
     @RequestMapping("/")
     public String helloWorld(HttpServletResponse response) {
-
         List<String> symbols = getSymbols();
-
         for(int i = 0 ; i < 15; i++) {
-
             TMAStrategy newTMA = new TMAStrategy("TMA Strategy: " + i, symbols.get((int) (Math.random() * (525 - 0))), 500.0, 5.0, 5.0, 1, 10);
             BBStrategy newBB = new BBStrategy("Bollinger Strategy: " + i, symbols.get((int) (Math.random() * (525 - 0))), 500.0, 5.0, 5.0, 20);
 
             strategyService.save(newTMA);
             strategyService.save(newBB);
         }
-
-
+        LOGGER.info("TESTING LOG");
         //orderService.save(t);
-
         return "Hello World!";
     }
 
-    public List<String> getSymbols(){
+    public List<String> getSymbols() {
         ArrayList<String> symbols = new ArrayList<String>();
         String response = "";
         try {
@@ -72,7 +69,6 @@ public class Controller {
             symbols.add(jsonObject.get("symbol").toString());
         }
         return symbols;
-
     }
     
 }
