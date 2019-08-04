@@ -52,8 +52,8 @@ public class EngineService {
             }
             strategyService.save(strategy);
         });
-
     }
+
     @Scheduled(fixedRate=500)
     public void runActiveStrats() {
         //Eventually we want to fetch all types of strategies
@@ -79,8 +79,6 @@ public class EngineService {
         });
     }
 
-
-
     @Async
     public void calculate(Strategy strategy) {
         if(strategy.getType().equals("TMAStrategy")) {
@@ -93,6 +91,7 @@ public class EngineService {
             doBBCalculation(bbStrategy);
         }
     }
+
     public void doBBCalculation(BBStrategy bbStrategy){
         int timeSpan = bbStrategy.getTimeSpan();
         String ticker = bbStrategy.getTicker();
@@ -111,6 +110,7 @@ public class EngineService {
             makeOrderAndPingBroker(bbStrategy, false);
         }
     }
+
     void initializeInitialBalance(Strategy strategy){
         double currentPrice = (double)getCurrentMarketData(strategy.getTicker(), "price");
         if(strategy.getInitialCapital() == null){
@@ -118,9 +118,8 @@ public class EngineService {
             strategyService.save(strategy);
         }
     }
-    static double variance(double a[],
-                           int n)
-    {
+
+    static double variance(double a[], int n) {
         // Compute mean (average
         // of elements)
         double sum = 0;
