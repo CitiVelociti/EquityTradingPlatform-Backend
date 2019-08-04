@@ -7,6 +7,8 @@ import citivelociti.backend.Models.BBStrategy;
 import citivelociti.backend.Models.Order;
 import citivelociti.backend.Models.Strategy;
 import citivelociti.backend.Models.TMAStrategy;
+
+import org.graalvm.compiler.nodes.ReturnNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -144,16 +146,12 @@ public class EngineService {
 
     public void makeOrderAndPingBroker(Strategy strategy, Boolean buy){
         String ticker = strategy.getTicker();
-        double currentPrice = (double)getCurrentMarketData(ticker, "price");
         String currentTime = (String)getCurrentMarketData(ticker, "time");
+        double currentPrice = (double)getCurrentMarketData(ticker, "price");
         Order order = new Order(strategy.getId(), buy, currentPrice);
         order = orderService.save(order);
         sendMessageToBroker(order.getId(), buy, currentPrice, (int) strategy.getQuantity().doubleValue(), ticker, currentTime);
-        if(buy) {
-            strategy.setCurrentPosition(Position.OPEN);
-        } else { 
-            strategy.setCurrentPosition(Position.CLOSED);
-        }
+        strategy.setCurrentPosition(buy?Position.OPEN:Position.CLOSED);
         strategyService.save(strategy);
     }
 
@@ -195,19 +193,20 @@ public class EngineService {
         return values;
     }
 
-    static double variance(double a[], int n) {
-        // Compute mean (average of elements)
-        double sum = 0;
-
+    static double mean(double a[], int n) {
+        double sum = 0.0;
         for(int i = 0; i < n; i++)
             sum += a[i];
-        double mean = (double)sum / (double)n;
+        return (double)sum / n;
+    }
+
+    static double variance(double a[], int n) {
+        double mean = mean(a, n);
 
         // Compute sum squared differences with mean.
         double sqDiff = 0;
         for(int i = 0; i < n; i++)
             sqDiff += (a[i] - mean) * (a[i] - mean);
-
         return (double)sqDiff / n;
     }
 
@@ -282,13 +281,7 @@ public class EngineService {
         List<Strategy> pausedStrategies = strategyService.findAllByStatus(Status.PAUSED);
         pausedStrategies.parallelStream().forEach((strategy)->{
             if(strategy.getCurrentPosition() == Position.OPEN) {
-                String currentTime = (String)getCurrentMarketData(strategy.getTicker(), "time");
-                double currentPrice = (double)getCurrentMarketData(strategy.getTicker(), "price");
-                Order order = new Order(strategy.getId(), false, currentPrice);
-                order = orderService.save(order);
-                sendMessageToBroker(order.getId(), false, currentPrice, (int) strategy.getQuantity().doubleValue(),strategy.getTicker(), currentTime);
-                strategy.setCurrentPosition(Position.CLOSED);
-                strategyService.save(strategy);
+                makeOrderAndPingBroker(strategy, false);
             }
         });
     }
