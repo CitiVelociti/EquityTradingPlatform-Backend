@@ -14,11 +14,14 @@ import javax.jms.Message;
 import javax.jms.Session;
 import java.io.File;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 @Component
 public class OrderBroker {
     @Autowired
     JmsTemplate jmsTemplate;
+
+    private static final Logger LOGGER = Logger.getLogger(OrderBroker.class.getName());
 
     @JmsListener(destination = "OrderBroker", containerFactory = "myJmsContainerFactory")
     public void receiveMessage(Message message) {
@@ -32,13 +35,11 @@ public class OrderBroker {
             int correlationID = Integer.parseInt(mapMessage.getJMSCorrelationID());
             sendMessageBack(correlationID, buy, price,  size,  stock, whenAsDate);
         } catch (Exception e) {
-            System.out.println(e);
+            LOGGER.severe("Error with data obtained");
         }
-
-
     }
 
-    public void sendMessageBack(int correlationID, boolean buy, double price, int size, String stock, String whenAsDate){
+    public void sendMessageBack(int correlationID, boolean buy, double price, int size, String stock, String whenAsDate) {
         jmsTemplate.send("OrderBroker_Reply", new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {

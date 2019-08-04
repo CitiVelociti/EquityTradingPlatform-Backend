@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class OrderService {
@@ -17,6 +18,8 @@ public class OrderService {
 
     @Autowired
     StrategyRepo strategyRepo;
+
+    private static final Logger LOGGER = Logger.getLogger(OrderService.class.getName());
 
     public Order save(Order t) {
         return orderRepo.save(t);
@@ -50,7 +53,6 @@ public class OrderService {
         return orderRepo.findAllByOrderByDateDesc();
     }
 
-
     public List<Order> findAllByStatus(OrderStatus status) {
         return orderRepo.findAllByStatus(status);
     }
@@ -69,35 +71,32 @@ public class OrderService {
      */
     public Double getProfitById(int id) {
         Order order = orderRepo.findById(id);
-        if(order == null) {
-            return null;
-        } else if (order.getStatus() == OrderStatus.FILLED) {
-            try {
-                Order recentOrder = orderRepo.findAllByStrategyIdOrderByDateDesc(order.getStrategyId()).get(1);;
+        try {
+            if (order != null && order.getStatus() == OrderStatus.FILLED) {
+                Order recentOrder = orderRepo.findAllByStrategyIdOrderByDateDesc(order.getStrategyId()).get(1);
                 return (order.getPrice() - recentOrder.getPrice()) * strategyRepo.findById(order.getStrategyId()).get().getQuantity();
-            } catch(Exception ex) {
-                // Need to change the exception later.
-                // Exception should be when tradeRepo.findAllByOrderByDateDesc() returns null or get(0) is not valid
             }
+        } catch(NullPointerException ex) {
+            LOGGER.severe("No such id");
+        } catch(Exception ex) {
+            LOGGER.severe("Error with get profit calculation");
         }
         return null;
     }
 
     public Double getProfitPercentById(int id) {
         Order order = orderRepo.findById(id);
-        if(order == null) {
-            return null;
-        } else if (order.getStatus() == OrderStatus.FILLED) {
-            try {
-                Order recentOrder = orderRepo.findAllByStrategyIdOrderByDateDesc(order.getStrategyId()).get(1);;
+        try {
+            if (order != null && order.getStatus() == OrderStatus.FILLED) {
+                Order recentOrder = orderRepo.findAllByStrategyIdOrderByDateDesc(order.getStrategyId()).get(1);
                 return (order.getPrice() - recentOrder.getPrice()) / recentOrder.getPrice();
-            } catch(Exception ex) {
-                // Need to change the exception later.
-                // Exception should be when tradeRepo.findAllByOrderByDateDesc() returns null or get(0) is not valid
             }
+        } catch(NullPointerException ex) {
+            LOGGER.severe("No such id");
+        } catch(Exception ex) {
+            LOGGER.severe("Error with get profit calculation");
         }
         return null;
     }
-
 }
 

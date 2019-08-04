@@ -1,8 +1,5 @@
 package citivelociti.backend.JMS;
 
-import java.io.File;
-import java.util.Calendar;
-
 import citivelociti.backend.Enums.Position;
 import citivelociti.backend.Enums.OrderStatus;
 import citivelociti.backend.Models.Order;
@@ -14,6 +11,9 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
 
+import java.io.File;
+import java.util.Calendar;
+import java.util.logging.Logger;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 
@@ -26,16 +26,18 @@ public class OrderListener {
     @Autowired
     StrategyService strategyService;
 
+    private static final Logger LOGGER = Logger.getLogger(OrderListener.class.getName());
+
     @JmsListener(destination = "OrderBroker_Reply", containerFactory = "myJmsContainerFactory")
     public void receiveMessage(Message message) {
         try {
             MapMessage mapMessage = (MapMessage)message;
-            if(mapMessage.getString("result").equals("FILLED")){
+            if(mapMessage.getString("result").equals("FILLED")) {
                 Order order = orderService.findById(Integer.parseInt(mapMessage.getJMSCorrelationID()));
                 order.setStatus(OrderStatus.FILLED);
                 orderService.save(order);
                 Strategy strategy = strategyService.findById(order.getStrategyId());
-                if(!order.getBuy()){
+                if(!order.getBuy()) {
                     double pnl = orderService.getProfitById(order.getId());
                     double pnlPercent = orderService.getProfitPercentById(order.getId());
                     order.setPnl(pnl);
@@ -46,19 +48,17 @@ public class OrderListener {
                     strat.setTotalPnlPercent(strat.getTotalPnl()/strat.getInitialCapital());
                     strategyService.save(strat);
                 }
-
-            } else if (!mapMessage.getString("result").equals("REJECTED")){
+            } else if (!mapMessage.getString("result").equals("REJECTED")) {
                 Order order = orderService.findById(Integer.parseInt(mapMessage.getJMSCorrelationID()));
                 order.setPrice(mapMessage.getDouble("price"));
                 order.setDate(Calendar.getInstance().getTime());
                 order.setStatus(OrderStatus.REJECTED);
                 orderService.save(order);
             }
-
             mapMessage.getString("result");
             FileSystemUtils.deleteRecursively(new File("activemq-data"));
         } catch (Exception e) {
-
+            LOGGER.severe("Error with data obtained");
         }
     }
 }

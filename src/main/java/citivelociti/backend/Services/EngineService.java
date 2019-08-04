@@ -54,14 +54,11 @@ public class EngineService {
     public void checkLimits() {
         List<Strategy> strategies = strategyService.findAll();
         strategies.parallelStream().forEach((strategy)->{
-            if(strategy.getTotalPnlPercent()*100 <= -10.0) {
+            if(strategy.getTotalPnlPercent()*100 <= -10.0 || strategy.getTotalPnlPercent()*100 >= strategy.getLimits()) {
                 strategy.setStatus(Status.EXITED);
-                LOGGER.info("STRATEGY EXITED");
-            } else if(strategy.getTotalPnlPercent()*100 >= strategy.getLimits()) {
-                strategy.setStatus(Status.EXITED);
-                LOGGER.info("STRATEGY EXITED");
+                strategyService.save(strategy);
+                // LOGGER.info("BUY/SELL");
             }
-            strategyService.save(strategy);
         });
     }
 

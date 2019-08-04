@@ -46,7 +46,7 @@ public class StrategyController {
     public @ResponseBody List<Strategy> pauseAll() {
         LOGGER.info("Pause all strategy");
         List<Strategy> strats = strategyService.findAll();
-        for(Strategy strat : strats){
+        for(Strategy strat : strats) {
             strat.setStatus(Status.PAUSED);
             strategyService.save(strat);
         }
@@ -57,7 +57,7 @@ public class StrategyController {
     public @ResponseBody List<Strategy> startAll() {
         LOGGER.info("Start all strategy");
         List<Strategy> strats = strategyService.findAll();
-        for(Strategy strat : strats){
+        for(Strategy strat : strats) {
             strat.setStatus(Status.ACTIVE);
             strategyService.save(strat);
         }
@@ -91,19 +91,18 @@ public class StrategyController {
         Double limit = Double.parseDouble(payload.get("limit"));
         Double stop = Double.parseDouble(payload.get("stop"));
 
+        Strategy newStrat = null;
         if(type.equals("TMAStrategy")) {
             Integer slowAvgIntervale = Integer.parseInt(payload.get("slowAvgIntervale"));
             Integer fastAvgIntervale = Integer.parseInt(payload.get("fastAvgIntervale"));
-            TMAStrategy newTMA = new TMAStrategy(name, ticker, quantity, limit, stop, slowAvgIntervale, fastAvgIntervale);
-            return strategyService.save(newTMA);
+            newStrat = new TMAStrategy(name, ticker, quantity, limit, stop, slowAvgIntervale, fastAvgIntervale);
+            LOGGER.info("CREATED A STRATEGY");
         } else if(type.equals("BBStrategy")) {
             Integer timeSpan = Integer.parseInt(payload.get("timeSpan"));
-            BBStrategy newBB = new BBStrategy(name, ticker, quantity, limit, stop, timeSpan);
-            return strategyService.save(newBB);
+            newStrat = new BBStrategy(name, ticker, quantity, limit, stop, timeSpan);
+            LOGGER.info("CREATED A STRATEGY");
         }
-
-        LOGGER.info("CREATED A STRATEGY");
-        return null;
+        return strategyService.save(newStrat);
     }
 
     @GetMapping(value = "/getTotalPnlById/{id}")
