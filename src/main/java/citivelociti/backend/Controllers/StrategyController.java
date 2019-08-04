@@ -21,7 +21,7 @@ public class StrategyController {
     @Autowired
     StrategyService strategyService;
 
-    private static final Logger LOGGER = Logger.getLogger(OrderController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(StrategyController.class.getName());
 
     @GetMapping(value = "/getById/{id}")
     public @ResponseBody Strategy getAllStrategiesById(@PathVariable Integer id) {
@@ -65,7 +65,7 @@ public class StrategyController {
 
     @GetMapping(value = "/getAllByStatus/{status}")
     public @ResponseBody List<Strategy> getAllStrategiesByStatus(@PathVariable Status status) {
-        LOGGER.info("Get all strategy by status: " + javax.net.ssl.SSLEngineResult.Status
+        LOGGER.info("Get all strategy by status: " + javax.net.ssl.SSLEngineResult.Status);
         return strategyService.findAllByStatus(status);
     }
 
