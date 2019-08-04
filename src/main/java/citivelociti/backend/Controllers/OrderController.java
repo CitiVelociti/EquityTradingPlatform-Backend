@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -41,7 +42,7 @@ public class OrderController {
 
     @GetMapping(value = "/getAllByBuyOrSell/{buy}")
     public @ResponseBody List<Order> getAllOrderByBuyOrSell(@PathVariable Boolean buy) {
-        LOGGER.info("Get all orders by buy|sell: " + buy?"buy":"sell");
+        LOGGER.info("Get all orders by buy|sell: " + buy);
         return orderService.findAllByBuy(buy);
     }
 
