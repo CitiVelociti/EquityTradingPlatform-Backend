@@ -26,7 +26,7 @@ public class StrategyController {
 
     @GetMapping(value = "/getById/{id}")
     public @ResponseBody Strategy getAllStrategiesById(@PathVariable Integer id) {
-        LOGGER.info("Get strategy by id: " + id);
+        // LOGGER.info("Get strategy by id: " + id);
         return strategyService.findById(id);
     }
 

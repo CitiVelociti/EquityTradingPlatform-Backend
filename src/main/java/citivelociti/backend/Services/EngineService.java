@@ -55,7 +55,8 @@ public class EngineService {
     public void checkLimits() {
         List<Strategy> strategies = strategyService.findAll();
         strategies.parallelStream().forEach((strategy)->{
-            if(strategy.getTotalPnlPercent()*100 <= -10.0 || strategy.getTotalPnlPercent()*100 >= strategy.getLimits()) {
+            if(strategy.getTotalPnlPercent()*100 <= (strategy.getStop()*-1)
+                || strategy.getTotalPnlPercent()*100 >= strategy.getLimits()) {
                 strategy.setStatus(Status.EXITED);
                 strategyService.save(strategy);
                 // LOGGER.info("BUY/SELL");
