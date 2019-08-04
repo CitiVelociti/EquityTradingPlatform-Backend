@@ -60,7 +60,7 @@ public class OrderController {
 
     @GetMapping(value = "/getByIdDesc/{id}")
     public @ResponseBody List<Order> getByIdDesc(@PathVariable int id) {
-        LOGGER.info("Get all orders by id descending");
+        // LOGGER.info("Get all orders by id descending");
         List<Order> orders = orderService.findAllByStrategyId((Integer)id);
         //TODO: CHANGE REVERSE
         //Collections.reverse(orders);

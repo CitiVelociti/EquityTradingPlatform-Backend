@@ -32,7 +32,7 @@ public class StrategyController {
 
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody List<Strategy> getAllStrategies() {
-        LOGGER.info("Get all strategy");
+        // LOGGER.info("Get all strategy");
         return strategyService.findAll();
     }
 
