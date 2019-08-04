@@ -18,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 public class Controller {
@@ -28,7 +29,7 @@ public class Controller {
     @Autowired
     OrderService orderService;
 
-    private static final Logger LOGGER = Logger.getLogger(ServiceImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(Controller.class.getName());
 
     @RequestMapping("/")
     public String helloWorld(HttpServletResponse response) {
