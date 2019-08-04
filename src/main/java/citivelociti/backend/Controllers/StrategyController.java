@@ -66,7 +66,7 @@ public class StrategyController {
 
     @GetMapping(value = "/getAllByStatus/{status}")
     public @ResponseBody List<Strategy> getAllStrategiesByStatus(@PathVariable Status status) {
-        LOGGER.info("Get all strategy by status: " + javax.net.ssl.SSLEngineResult.Status);
+        LOGGER.info("Get all strategy by status: " + status);
         return strategyService.findAllByStatus(status);
     }
 
