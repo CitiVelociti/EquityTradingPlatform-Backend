@@ -40,10 +40,10 @@ public abstract class Strategy implements IStrategy {
         this.ticker = ticker;
         this.quantity = quantity;
         this.limits = limit;
+        this.stop = stop>10||stop<0?10:stop;
         this.stop = stop;
         this.totalPnl = 0.0;
         this.totalPnlPercent = 0.0;
-       // this.initialCapital = initialCapital;
     }
 
     public void addPnl(Double pnl){

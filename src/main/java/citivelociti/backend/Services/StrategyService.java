@@ -60,7 +60,7 @@ public class StrategyService {
         return strategy;
     }
 
-    public Double getTotalPnlById(int id){
+    public Double getTotalPnlById(int id) {
         double totalPnl = 0;
         List <Order> orders = orderRepo.findAllByStrategyId(id);
         for(Order order: orders){
@@ -68,9 +68,6 @@ public class StrategyService {
                 totalPnl += order.getPnl();
             }
         }
-
         return totalPnl;
-
     }
-
 }

@@ -18,15 +18,9 @@ public class Order implements IOrder {
     private Double price;       // Price of bought stock
     private Double pnl;
     private Double pnlPercent;
-    //private Double closePrice;      // Price of sell stock
     @Basic
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;          // Date which the strategy started
-
-    /*@Basic
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date closeDate;         // Date which the strategy ended
-    */
     @Enumerated
     private OrderStatus status;     // OPEN, FILLED, REJECTED
 

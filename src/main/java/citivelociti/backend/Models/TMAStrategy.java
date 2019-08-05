@@ -58,4 +58,3 @@ public class TMAStrategy extends Strategy {
     }
 
 }
-
